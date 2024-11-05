@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: The_Monitor
+
+  profiles:
+    active: local
+    group:
+      local: "local"
+      dev: "dev"
+      prod: "prod"
