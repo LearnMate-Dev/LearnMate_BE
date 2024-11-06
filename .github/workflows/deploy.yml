@@ -28,9 +28,9 @@ jobs:
       - name: Build and push Docker image with JIB
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
-        run: ./gradlew jib -Djib.to.auth.username=$DOCKER_USERNAME -Djib.to.auth.password=$DOCKER_PASSWORD \
-          -Djib.to.image=$DOCKER_USERNAME/learnmate:latest
+        run: ./gradlew jib -Djib.to.auth.username=$DOCKER_USERNAME -Djib.to.auth.password=$DOCKER_PASSWORD -Djib.to.image=$DOCKER_USERNAME/learnmate:latest
 
   deploy:
     runs-on: ubuntu-latest
