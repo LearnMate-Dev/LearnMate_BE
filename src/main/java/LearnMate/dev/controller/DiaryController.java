@@ -3,6 +3,7 @@ package LearnMate.dev.controller;
 import LearnMate.dev.common.ApiResponse;
 import LearnMate.dev.model.dto.request.DiaryPatchRequest;
 import LearnMate.dev.model.dto.request.DiaryPostRequest;
+import LearnMate.dev.model.dto.response.DiaryDetailResponse;
 import LearnMate.dev.service.DiaryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -43,6 +44,16 @@ public class DiaryController {
 
         diaryService.deleteDiary(1L, diaryId);
         return ApiResponse.onSuccess("일기 삭제 성공");
+
+    }
+
+    @GetMapping("/{diaryId}")
+    public ApiResponse<DiaryDetailResponse> getDiaryDetail(
+            // TODO: get user info from session
+//            @SessionAttribute(name = "user_id") Long userId,
+            @PathVariable(value = "diaryId") Long diaryId) {
+
+        return ApiResponse.onSuccessData("일기 상세 조회 성공", diaryService.getDiaryDetail(1L, diaryId));
 
     }
 }

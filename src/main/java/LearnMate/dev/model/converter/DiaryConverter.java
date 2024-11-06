@@ -1,5 +1,6 @@
 package LearnMate.dev.model.converter;
 
+import LearnMate.dev.model.dto.response.DiaryDetailResponse;
 import LearnMate.dev.model.entity.ActionTip;
 import LearnMate.dev.model.entity.Diary;
 import LearnMate.dev.model.entity.Emotion;
@@ -13,6 +14,15 @@ public class DiaryConverter {
                 .user(user)
                 .emotion(emotion)
                 .actionTip(actionTip)
+                .build();
+    }
+
+    public static DiaryDetailResponse toDiaryDetailResponse(Diary diary) {
+        return DiaryDetailResponse.builder()
+                .date(diary.getCreatedAtFormatted())
+                .content(diary.getContent())
+                .emotion(diary.getEmotion().getEmotion().getValue())
+                .actionTip(diary.getActionTip().getContent())
                 .build();
     }
 

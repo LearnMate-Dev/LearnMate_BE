@@ -5,6 +5,7 @@ import LearnMate.dev.common.ErrorStatus;
 import LearnMate.dev.model.converter.DiaryConverter;
 import LearnMate.dev.model.dto.request.DiaryPatchRequest;
 import LearnMate.dev.model.dto.request.DiaryPostRequest;
+import LearnMate.dev.model.dto.response.DiaryDetailResponse;
 import LearnMate.dev.model.entity.Diary;
 import LearnMate.dev.model.entity.User;
 import LearnMate.dev.repository.DiaryRepository;
@@ -68,6 +69,8 @@ public class DiaryService {
         // content 정보 수정
         diary.updateContent(content);
 
+        // TODO: 감정 분석 API 호출
+
         // TODO: 일기 및 감정 분석 상세 조회로 변경
         return diary.getId();
     }
@@ -86,6 +89,21 @@ public class DiaryService {
 
         // TODO: EMOTION, ACTIONTIP CASCADE
         diaryRepository.delete(diary);
+    }
+
+    /*
+     * diary 작성 날짜, 내용, 감정 지표, 행동 요령 등 상세 정보를 반환
+     * @param userId
+     * @param diaryId
+     * @return
+     */
+    public DiaryDetailResponse getDiaryDetail(Long userId, Long diaryId) {
+        // user - diary 권한 검사
+        User user = findUserById(userId);
+        Diary diary = findDiaryById(diaryId);
+        validIsUserAuthorizedForDiary(user, diary);
+
+        return DiaryConverter.toDiaryDetailResponse(diary);
     }
 
     private void validIsUserPostDiary(User user) {
