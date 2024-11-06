@@ -22,10 +22,10 @@ public class Diary extends BaseTimeEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToOne(mappedBy = "diary", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "diary", cascade = CascadeType.ALL, orphanRemoval = true)
     private Emotion emotion;
 
-    @OneToOne(mappedBy = "diary", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "diary", cascade = CascadeType.ALL, orphanRemoval = true)
     private ActionTip actionTip;
 
     public void updateContent(String content) {

@@ -5,15 +5,13 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Getter @Builder
+@Getter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class DiaryDetailResponse {
+public class DiaryAnalysisResponse {
 
-    private Long diaryId;
-    private String date;
-    private String content;
-    private String emotion; // 감정 지표
+    private Double emotionScore;
     private String actionTip;
 
 }

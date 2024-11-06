@@ -2,13 +2,12 @@ package LearnMate.dev.model.entity;
 
 import LearnMate.dev.model.enums.EmotionSpectrum;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Entity
+@Entity @Builder
 @Getter
 @Table(name = "emotions")
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Emotion {
     @Id
@@ -30,4 +29,8 @@ public class Emotion {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "report_id")
     private Report report;
+
+    public void updateDiary(Diary diary) {
+        this.diary = diary;
+    }
 }

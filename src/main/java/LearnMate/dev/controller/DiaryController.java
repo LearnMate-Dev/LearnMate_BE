@@ -1,8 +1,10 @@
 package LearnMate.dev.controller;
 
 import LearnMate.dev.common.ApiResponse;
+import LearnMate.dev.model.dto.request.DiaryAnalysisRequest;
 import LearnMate.dev.model.dto.request.DiaryPatchRequest;
 import LearnMate.dev.model.dto.request.DiaryPostRequest;
+import LearnMate.dev.model.dto.response.DiaryAnalysisResponse;
 import LearnMate.dev.model.dto.response.DiaryDetailResponse;
 import LearnMate.dev.service.DiaryService;
 import jakarta.validation.Valid;
@@ -16,8 +18,18 @@ public class DiaryController {
 
     private final DiaryService diaryService;
 
+    @GetMapping("/analysis")
+    public ApiResponse<DiaryAnalysisResponse> getDiaryAnalysis(
+            // TODO: get user info from session
+//            @SessionAttribute(name = "user_id") Long userId,
+            @RequestBody @Valid DiaryAnalysisRequest request) {
+
+        return ApiResponse.onSuccessData("일기 분석 성공", diaryService.analyzeDiary(1L, request));
+
+    }
+
     @PostMapping("")
-    public ApiResponse<Long> postDiary(
+    public ApiResponse<DiaryDetailResponse> postDiary(
             // TODO: get user info from session
 //            @SessionAttribute(name = "user_id") Long userId,
             @RequestBody @Valid DiaryPostRequest request) {
@@ -27,7 +39,7 @@ public class DiaryController {
     }
 
     @PatchMapping("")
-    public ApiResponse<Long> patchDiary(
+    public ApiResponse<DiaryDetailResponse> patchDiary(
             // TODO: get user info from session
 //            @SessionAttribute(name = "user_id") Long userId,
             @RequestBody @Valid DiaryPatchRequest request ) {

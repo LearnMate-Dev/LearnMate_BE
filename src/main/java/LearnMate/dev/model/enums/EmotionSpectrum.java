@@ -14,4 +14,13 @@ public enum EmotionSpectrum {
         return value;
     }
 
+    public static EmotionSpectrum getName(String value){
+        for (EmotionSpectrum emotion : EmotionSpectrum.values()) {
+            if (emotion.getValue().equals(value)) {
+                return emotion;
+            }
+        }
+        return null;
+    }
+
 }
