@@ -28,4 +28,10 @@ public class Diary extends BaseTimeEntity {
     @OneToOne(mappedBy = "diary", cascade = CascadeType.ALL)
     private ActionTip actionTip;
 
+    public void updateContent(String content) {
+        if (!content.isEmpty()) {
+            this.content = content;
+        }
+    }
+
 }

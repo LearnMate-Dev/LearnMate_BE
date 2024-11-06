@@ -1,6 +1,7 @@
 package LearnMate.dev.controller;
 
 import LearnMate.dev.common.ApiResponse;
+import LearnMate.dev.model.dto.request.DiaryPatchRequest;
 import LearnMate.dev.model.dto.request.DiaryPostRequest;
 import LearnMate.dev.service.DiaryService;
 import jakarta.validation.Valid;
@@ -21,6 +22,16 @@ public class DiaryController {
             @RequestBody @Valid DiaryPostRequest request) {
 
         return ApiResponse.onSuccessData("일기 작성 성공", diaryService.postDiary(1L, request));
+
+    }
+
+    @PatchMapping("")
+    public ApiResponse<Long> patchDiary(
+            // TODO: get user info from session
+//            @SessionAttribute(name = "user_id") Long userId,
+            @RequestBody @Valid DiaryPatchRequest request ) {
+
+        return ApiResponse.onSuccessData("일기 수정 성공", diaryService.patchDiary(1L, request));
 
     }
 }
