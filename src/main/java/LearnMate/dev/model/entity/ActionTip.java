@@ -21,4 +21,8 @@ public class ActionTip extends BaseTimeEntity {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "diary_id")
     private Diary diary;
+
+    public void updateDiary(Diary diary) {
+        this.diary = diary;
+    }
 }

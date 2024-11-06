@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class DiaryDetailResponse {
 
+    private Long diaryId;
     private String date;
     private String content;
     private String emotion; // 감정 지표

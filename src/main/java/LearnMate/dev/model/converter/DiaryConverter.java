@@ -20,6 +20,7 @@ public class DiaryConverter {
 
     public static DiaryDetailResponse toDiaryDetailResponse(Diary diary) {
         return DiaryDetailResponse.builder()
+                .diaryId(diary.getId())
                 .date(diary.getCreatedAtFormatted())
                 .content(diary.getContent())
                 .emotion(diary.getEmotion().getEmotion().getValue())

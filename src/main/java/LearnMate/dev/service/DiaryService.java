@@ -52,7 +52,7 @@ public class DiaryService {
     }
 
     /*
-     * content를 받아 일기를 작성
+     * content, 감정 분석 결과, 행동 요령 제안 결과를 받아 최종적으로 일기를 작성 후 상세 정보를 반환
      * @param userId
      * @param request
      * @return
@@ -115,7 +115,6 @@ public class DiaryService {
         Diary diary = findDiaryById(diaryId);
         validIsUserAuthorizedForDiary(user, diary);
 
-        // TODO: EMOTION, ACTIONTIP CASCADE
         diaryRepository.delete(diary);
     }
 
@@ -137,7 +136,12 @@ public class DiaryService {
     private Diary createDiary(User user, DiaryPostRequest request, EmotionSpectrum emotionSpectrum) {
         Emotion emotion = EmotionConverter.toEmotion(request.getScore(), emotionSpectrum);
         ActionTip actionTip = ActionTipConverter.toActionTip(request.getActionTip());
-        return DiaryConverter.toDiary(request.getContent(), user, emotion, actionTip);
+        Diary diary = DiaryConverter.toDiary(request.getContent(), user, emotion, actionTip);
+
+        emotion.updateDiary(diary);
+        actionTip.updateDiary(diary);
+
+        return diary;
     }
 
     private void validIsUserPostDiary(User user) {
