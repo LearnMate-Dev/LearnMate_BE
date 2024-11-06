@@ -23,6 +23,7 @@ public class UserService {
 
     private final UserRepository userRepository;
 
+    @Transactional
     public String signUp(UserSignUpRequest request) {
         if (userRepository.findUserByLoginId(request.getLoginId()) != null) {
             throw new ApiException(ErrorStatus._ACCOUNT_ALREADY_EXIST);

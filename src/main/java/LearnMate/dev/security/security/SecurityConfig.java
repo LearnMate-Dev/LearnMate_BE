@@ -35,12 +35,8 @@ public class SecurityConfig {
 
     // 공개 URL
     private static final String[] PUBLIC_URLS = {
-            "/api/v1/accounts/sendEmailConfirm",
-            "/api/v1/accounts/verifyCode",
-            "/api/v1/accounts/signUp",
-            "/api/v1/accounts/signIn",
-            "/api/v1/accounts/checkEmail",
-            "/api/v1/accounts/sendPasswordChangeEmail",
+            "/api/v1/users/signUp",
+            "/api/v1/users/signIn",
     };
 
     private static final String[] WHITE_LIST_URL = {
