@@ -3,8 +3,10 @@ package LearnMate.dev.service;
 import LearnMate.dev.common.ApiException;
 import LearnMate.dev.common.ErrorStatus;
 import LearnMate.dev.model.converter.DiaryConverter;
+import LearnMate.dev.model.dto.request.DiaryAnalysisRequest;
 import LearnMate.dev.model.dto.request.DiaryPatchRequest;
 import LearnMate.dev.model.dto.request.DiaryPostRequest;
+import LearnMate.dev.model.dto.response.DiaryAnalysisResponse;
 import LearnMate.dev.model.dto.response.DiaryDetailResponse;
 import LearnMate.dev.model.entity.Diary;
 import LearnMate.dev.model.entity.User;
@@ -22,6 +24,27 @@ import java.time.LocalDate;
 public class DiaryService {
     private final UserRepository userRepository;
     private final DiaryRepository diaryRepository;
+
+    /*
+     * 유저의 일기 내용을 기반으로 감정을 분석하고 행동 요령을 제안함
+     * @param userId
+     * @param request
+     * @return
+     */
+    public DiaryAnalysisResponse analyzeDiary(Long userId, DiaryAnalysisRequest request) {
+        User user = findUserById(userId);
+        validIsUserPostDiary(user);
+
+        // content 길이 검사
+        String content = request.getContent();
+        validContentLength(content);
+
+        // TODO: 감정 분석 API 호출
+
+        // TODO: 행동 요령 제안 API 호출
+
+        return DiaryConverter.toDiaryAnalysisResponse(1.0, "ActionTip");
+    }
 
     /*
      * content를 받아 일기를 작성
