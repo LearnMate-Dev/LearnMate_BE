@@ -1,4 +1,4 @@
-name: Deploy Spring Boot to EC2
+name: Build and Deploy with JIB
 
 on:
   push:
@@ -18,16 +18,14 @@ jobs:
         with:
           java-version: '21'
 
-      - name: Set up Docker credentials
-        run: |
-          echo "DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}" >> $GITHUB_ENV
-          echo "DOCKER_PASSWORD=${{ secrets.DOCKER_PASSWORD }}" >> $GITHUB_ENV
-
-      - name: Build JAR file
-        run: ./gradlew bootJar
-
       - name: Build and push Docker image with JIB
-        run: ./gradlew jib -Pprod --image=${{ secrets.DOCKER_USERNAME }}/learnmate:latest
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+          ./gradlew jib -Djib.to.auth.username=$DOCKER_USERNAME -Djib.to.auth.password=$DOCKER_PASSWORD \
+            -Djib.to.image=$DOCKER_USERNAME/learnmate:latest
 
   deploy:
     runs-on: ubuntu-latest
@@ -39,16 +37,11 @@ jobs:
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ec2-user
-          key: ${{ secrets.EC2_PRIVATE_KEY }}
+          key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            # Pull the latest application image
-            docker pull ${{ secrets.DOCKER_USERNAME }}/learnmate:latest
-            
             # Stop and remove any existing application container
-            docker stop learnmate-container || true
-            docker rm learnmate-container || true
-            
-            # Run the application container with the name learnmate
-            docker run -d -p 8080:8080 --name learnmate-container \
-              --env-file /path/to/.env \
-              ${{ secrets.DOCKER_USERNAME }}/learnmate:latest
+            docker-compose down || true
+            # Pull the latest image
+            docker pull ${{ secrets.DOCKER_USERNAME }}/learnmate:latest
+            # Start application with docker-compose
+            docker-compose up -d
