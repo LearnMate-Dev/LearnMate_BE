@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @Getter
 @Table(name = "users")
@@ -26,6 +28,16 @@ public class User extends BaseTimeEntity {
 
     @Column(name = "user_password", nullable = false)
     private String password;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Report> reportList;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Diary> diaryList;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Plan> planList;
+
 
     @Builder
     public User(String name, String loginId, String password) {
