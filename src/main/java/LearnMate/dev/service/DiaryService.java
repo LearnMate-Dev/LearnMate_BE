@@ -58,6 +58,9 @@ public class DiaryService {
         Diary diary = findDiaryById(request.getDiaryId());
         validIsUserAuthorizedForDiary(user, diary);
 
+        // 일기 작성 날짜 검사
+        validDiaryCreatedAt(diary);
+
         // content 길이 검사
         String content = request.getContent();
         validContentLength(content);
@@ -67,6 +70,22 @@ public class DiaryService {
 
         // TODO: 일기 및 감정 분석 상세 조회로 변경
         return diary.getId();
+    }
+
+    /*
+     * diaryId를 param으로 받아, diary, emotion, actiontip 객체 제거
+     * @param userId
+     * @param diaryId
+     */
+    @Transactional
+    public void deleteDiary(Long userId, Long diaryId) {
+        // user - diary 권한 검사
+        User user = findUserById(userId);
+        Diary diary = findDiaryById(diaryId);
+        validIsUserAuthorizedForDiary(user, diary);
+
+        // TODO: EMOTION, ACTIONTIP CASCADE
+        diaryRepository.delete(diary);
     }
 
     private void validIsUserPostDiary(User user) {
@@ -82,6 +101,11 @@ public class DiaryService {
     private void validIsUserAuthorizedForDiary(User user, Diary diary) {
         if (!diary.getUser().equals(user))
             throw new ApiException(ErrorStatus._USER_FORBIDDEN_DIARY);
+    }
+
+    private void validDiaryCreatedAt(Diary diary) {
+        if (diary.getCreatedAt().toLocalDate().equals(LocalDate.now()))
+            throw new ApiException(ErrorStatus._INVALID_PATCH_DIARY);
     }
 
     private User findUserById(Long userId) {

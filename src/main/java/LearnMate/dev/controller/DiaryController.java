@@ -34,4 +34,15 @@ public class DiaryController {
         return ApiResponse.onSuccessData("일기 수정 성공", diaryService.patchDiary(1L, request));
 
     }
+
+    @DeleteMapping("/{diaryId}")
+    public ApiResponse deleteDiary(
+            // TODO: get user info from session
+//            @SessionAttribute(name = "user_id") Long userId,
+            @PathVariable(value = "diaryId") Long diaryId) {
+
+        diaryService.deleteDiary(1L, diaryId);
+        return ApiResponse.onSuccess("일기 삭제 성공");
+
+    }
 }
