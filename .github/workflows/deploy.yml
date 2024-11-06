@@ -1,38 +1,54 @@
-name: Build and Push Docker Image with Jib
+name: Deploy Spring Boot to EC2
 
 on:
   push:
-    branches: ["main"]
-permissions:
-  contents: read
+    branches:
+      - main
 
 jobs:
-  build-and-push-image:
+  build:
     runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3  # 서브모듈 관련 옵션 제거
 
-      - name: Copy application-prod.yml
-        run: |
-          mkdir -p src/main/resources
-          cp path/to/application-prod.yml src/main/resources/application-prod.yml
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
 
       - name: Set up JDK 21
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v1
         with:
-          java-version: "21"
-          distribution: "temurin"
+          java-version: '21'
 
-      - name: Build and push Docker image
+      - name: Set up Docker credentials
         run: |
-          ./gradlew jib -x test \
-            -Djib.to.tags=${{ github.sha }} \
-            -Djib.to.auth.username=${{ secrets.DOCKER_USERNAME }} \
-            -Djib.to.auth.password=${{ secrets.DOCKER_PASSWORD }}
+          echo "DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}" >> $GITHUB_ENV
+          echo "DOCKER_PASSWORD=${{ secrets.DOCKER_PASSWORD }}" >> $GITHUB_ENV
 
-      - name: Push Docker image to EC2 server
-        env:
-          DOCKER_IMAGE: "${{ secrets.DOCKER_USERNAME }}/learnMate:${{ github.sha }}"
-        run: |
-          ssh -o "StrictHostKeyChecking=no" -i ${{ secrets.EC2_SSH_KEY }} ec2-user@${{ secrets.EC2_HOST }} "docker pull $DOCKER_IMAGE && docker run -d -p 8080:8080 $DOCKER_IMAGE"
+      - name: Build JAR file
+        run: ./gradlew bootJar
+
+      - name: Build and push Docker image with JIB
+        run: ./gradlew jib -Pprod --image=${{ secrets.DOCKER_USERNAME }}/learnMate:latest
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Connect to EC2 and deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ec2-user
+          key: ${{ secrets.EC2_PRIVATE_KEY }}
+          script: |
+            # Pull the latest application image
+            docker pull ${{ secrets.DOCKER_USERNAME }}/learnMate:latest
+            
+            # Stop and remove any existing application container
+            docker stop learnMate-container || true
+            docker rm learnMate-container || true
+            
+            # Run the application container with the name learnMate
+            docker run -d -p 8080:8080 --name learnMate-container \
+              --env-file /path/to/.env \
+              ${{ secrets.DOCKER_USERNAME }}/learnMate:latest
