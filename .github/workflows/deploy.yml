@@ -29,8 +29,7 @@ jobs:
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
-        run: ./gradlew jib -Djib.to.auth.username=$DOCKER_USERNAME -Djib.to.auth.password=$DOCKER_PASSWORD \
-          -Djib.to.image=$DOCKER_USERNAME/learnmate:latest
+        run: ./gradlew jib -Djib.to.auth.username=${{ secrets.DOCKER_USERNAME }} -Djib.to.auth.password=${{ secrets.DOCKER_PASSWORD }} -Djib.to.image=${{ secrets.DOCKER_USERNAME }}/learnmate:latest
 
   deploy:
     runs-on: ubuntu-latest
