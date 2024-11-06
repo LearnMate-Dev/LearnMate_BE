@@ -10,16 +10,13 @@ jobs:
   build-and-push-image:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repository and Submodules
-        uses: actions/checkout@v3
-        with:
-          submodules: true
-          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Checkout Repository
+        uses: actions/checkout@v3  # 서브모듈 관련 옵션 제거
 
-      - name: Copy application.yml from submodule
+      - name: Copy application-prod.yml
         run: |
           mkdir -p src/main/resources
-          cp application-config/application-prod.yml src/main/resources/application-prod.yml
+          cp path/to/application-prod.yml src/main/resources/application-prod.yml
 
       - name: Set up JDK 21
         uses: actions/setup-java@v3
