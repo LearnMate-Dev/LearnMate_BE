@@ -27,7 +27,7 @@ jobs:
         run: ./gradlew bootJar
 
       - name: Build and push Docker image with JIB
-        run: ./gradlew jib -Pprod --image=${{ secrets.DOCKER_USERNAME }}/learnMate:latest
+        run: ./gradlew jib -Pprod --image=${{ secrets.DOCKER_USERNAME }}/learnmate:latest
 
   deploy:
     runs-on: ubuntu-latest
@@ -42,13 +42,13 @@ jobs:
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           script: |
             # Pull the latest application image
-            docker pull ${{ secrets.DOCKER_USERNAME }}/learnMate:latest
+            docker pull ${{ secrets.DOCKER_USERNAME }}/learnmate:latest
             
             # Stop and remove any existing application container
-            docker stop learnMate-container || true
-            docker rm learnMate-container || true
+            docker stop learnmate-container || true
+            docker rm learnmate-container || true
             
-            # Run the application container with the name learnMate
-            docker run -d -p 8080:8080 --name learnMate-container \
+            # Run the application container with the name learnmate
+            docker run -d -p 8080:8080 --name learnmate-container \
               --env-file /path/to/.env \
-              ${{ secrets.DOCKER_USERNAME }}/learnMate:latest
+              ${{ secrets.DOCKER_USERNAME }}/learnmate:latest
