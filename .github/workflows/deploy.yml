@@ -36,12 +36,23 @@ jobs:
     needs: build
 
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Create SSH Key File
+        run: echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/id_rsa
+        shell: bash
+
+      - name: Set SSH Key Permissions
+        run: chmod 600 ~/.ssh/id_rsa
+        shell: bash
+
       - name: Connect to EC2 and deploy
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ec2-user
-          key: ${{ secrets.EC2_SSH_KEY }}
+          key_path: ~/.ssh/id_rsa
           script: |
             # Stop and remove any existing application container
             docker-compose down || true
