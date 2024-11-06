@@ -34,11 +34,16 @@ public enum ErrorStatus implements BaseErrorCode {
     _JWT_BLACKLIST(HttpStatus.UNAUTHORIZED, "JWT400", "접근 불가능한 토큰입니다"),
     _JWT_UNKNOWN_ERROR(HttpStatus.UNAUTHORIZED, "JWT400", "JWT 인증 중 알 수 없는 오류가 발생했습니다."),
 
+    // Diary
     _DUPLICATE_DIARY_DATE(HttpStatus.BAD_REQUEST, "DIARY400", "일기는 하루에 한 개만 작성할 수 있습니다."),
     _INVALID_PATCH_DIARY(HttpStatus.BAD_REQUEST, "DIARY400", "당일 작성한 일기만 수정할 수 있습니다."),
     _INVALID_DIARY_CONTENT_LENGTH(HttpStatus.BAD_REQUEST, "DIARY400", "일기의 내용은 500자 이하여야 합니다."),
     _USER_FORBIDDEN_DIARY(HttpStatus.FORBIDDEN, "DIARY403", "다이어리에 접근 권한이 없습니다."),
     _DIARY_NOT_FOUND(HttpStatus.NOT_FOUND, "DIARY404", "해당 다이어리를 찾을 수 없습니다."),
+
+    // Emotion
+    _INVALID_EMOTION_SCORE(HttpStatus.BAD_REQUEST, "EMOTION400", "감정 점수는 -1과 1 사이여야 합니다."),
+    _INVALID_EMOTION_SPECTRUN(HttpStatus.BAD_REQUEST, "EMOTION400", "유효하지 않은 감정 지표입니다.")
     ;
 
 

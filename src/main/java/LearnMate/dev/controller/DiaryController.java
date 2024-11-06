@@ -29,7 +29,7 @@ public class DiaryController {
     }
 
     @PostMapping("")
-    public ApiResponse<Long> postDiary(
+    public ApiResponse<DiaryDetailResponse> postDiary(
             // TODO: get user info from session
 //            @SessionAttribute(name = "user_id") Long userId,
             @RequestBody @Valid DiaryPostRequest request) {
@@ -39,7 +39,7 @@ public class DiaryController {
     }
 
     @PatchMapping("")
-    public ApiResponse<Long> patchDiary(
+    public ApiResponse<DiaryDetailResponse> patchDiary(
             // TODO: get user info from session
 //            @SessionAttribute(name = "user_id") Long userId,
             @RequestBody @Valid DiaryPatchRequest request ) {

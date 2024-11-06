@@ -2,13 +2,12 @@ package LearnMate.dev.model.entity;
 
 import LearnMate.dev.common.BaseTimeEntity;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
-@Getter
+@Getter @Builder
 @Table(name = "actiontips")
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ActionTip extends BaseTimeEntity {
     @Id

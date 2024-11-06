@@ -2,14 +2,19 @@ package LearnMate.dev.service;
 
 import LearnMate.dev.common.ApiException;
 import LearnMate.dev.common.ErrorStatus;
+import LearnMate.dev.model.converter.ActionTipConverter;
 import LearnMate.dev.model.converter.DiaryConverter;
+import LearnMate.dev.model.converter.EmotionConverter;
 import LearnMate.dev.model.dto.request.DiaryAnalysisRequest;
 import LearnMate.dev.model.dto.request.DiaryPatchRequest;
 import LearnMate.dev.model.dto.request.DiaryPostRequest;
 import LearnMate.dev.model.dto.response.DiaryAnalysisResponse;
 import LearnMate.dev.model.dto.response.DiaryDetailResponse;
+import LearnMate.dev.model.entity.ActionTip;
 import LearnMate.dev.model.entity.Diary;
+import LearnMate.dev.model.entity.Emotion;
 import LearnMate.dev.model.entity.User;
+import LearnMate.dev.model.enums.EmotionSpectrum;
 import LearnMate.dev.repository.DiaryRepository;
 import LearnMate.dev.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -53,20 +58,21 @@ public class DiaryService {
      * @return
      */
     @Transactional
-    public Long postDiary(Long userId, DiaryPostRequest request) {
+    public DiaryDetailResponse postDiary(Long userId, DiaryPostRequest request) {
         User user = findUserById(userId);
         validIsUserPostDiary(user);
 
         // content 길이 검사
-        String content = request.getContent();
-        validContentLength(content);
+        validContentLength(request.getContent());
 
-        // TODO: GPT API 연결 및 EMOTION, ACTIONTIP ENTITY 저장 수정
-        Diary diary = DiaryConverter.toDiary(request.getContent(), user, null, null);
+        // emotion 정보 검사
+        EmotionSpectrum emotionSpectrum = validEmotion(request.getScore(), request.getEmotion());
+
+        // 객체 생성 및 연관관계 설정
+        Diary diary = createDiary(user, request, emotionSpectrum);
         diaryRepository.save(diary);
 
-        // TODO: 일기 및 감정 분석 상세 조회로 변경
-        return diary.getId();
+        return DiaryConverter.toDiaryDetailResponse(diary);
     }
 
     /*
@@ -76,7 +82,7 @@ public class DiaryService {
      * @return
      */
     @Transactional
-    public Long patchDiary(Long userId, DiaryPatchRequest request) {
+    public DiaryDetailResponse patchDiary(Long userId, DiaryPatchRequest request) {
         // user - diary 권한 검사
         User user = findUserById(userId);
         Diary diary = findDiaryById(request.getDiaryId());
@@ -94,8 +100,7 @@ public class DiaryService {
 
         // TODO: 감정 분석 API 호출
 
-        // TODO: 일기 및 감정 분석 상세 조회로 변경
-        return diary.getId();
+        return DiaryConverter.toDiaryDetailResponse(diary);
     }
 
     /*
@@ -129,6 +134,12 @@ public class DiaryService {
         return DiaryConverter.toDiaryDetailResponse(diary);
     }
 
+    private Diary createDiary(User user, DiaryPostRequest request, EmotionSpectrum emotionSpectrum) {
+        Emotion emotion = EmotionConverter.toEmotion(request.getScore(), emotionSpectrum);
+        ActionTip actionTip = ActionTipConverter.toActionTip(request.getActionTip());
+        return DiaryConverter.toDiary(request.getContent(), user, emotion, actionTip);
+    }
+
     private void validIsUserPostDiary(User user) {
         if (diaryRepository.existsDiaryByCreatedAt(user, LocalDate.now()))
             throw new ApiException(ErrorStatus._DUPLICATE_DIARY_DATE);
@@ -147,6 +158,17 @@ public class DiaryService {
     private void validDiaryCreatedAt(Diary diary) {
         if (diary.getCreatedAt().toLocalDate().equals(LocalDate.now()))
             throw new ApiException(ErrorStatus._INVALID_PATCH_DIARY);
+    }
+
+    private EmotionSpectrum validEmotion(Double score, String emotion) {
+        if (score < -1.0 || score > 1.0)
+            throw new ApiException(ErrorStatus._INVALID_EMOTION_SCORE);
+
+        EmotionSpectrum emotionSpectrum = EmotionSpectrum.getName(emotion);
+        if (emotionSpectrum == null)
+            throw new ApiException(ErrorStatus._INVALID_EMOTION_SPECTRUN);
+
+        return emotionSpectrum;
     }
 
     private User findUserById(Long userId) {
