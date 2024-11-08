@@ -1,6 +1,6 @@
 package LearnMate.dev.service;
 
-import LearnMate.dev.common.ApiException;
+import LearnMate.dev.common.exception.ApiException;
 import LearnMate.dev.common.ErrorStatus;
 import LearnMate.dev.model.converter.ActionTipConverter;
 import LearnMate.dev.model.converter.DiaryConverter;
@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 @Transactional(readOnly = true)
@@ -29,6 +30,8 @@ import java.time.LocalDate;
 public class DiaryService {
     private final UserRepository userRepository;
     private final DiaryRepository diaryRepository;
+    private final NaturalLanguageService naturalLanguageService;
+    private final ActionTipService actionTipService;
 
     /*
      * 유저의 일기 내용을 기반으로 감정을 분석하고 행동 요령을 제안함
@@ -44,11 +47,14 @@ public class DiaryService {
         String content = request.getContent();
         validContentLength(content);
 
-        // TODO: 감정 분석 API 호출
+        // 감정 분석 후 감정 점수 반환
+        CompletableFuture<Float> scoreFuture = naturalLanguageService.analyzeEmotion(content);
 
         // TODO: 행동 요령 제안 API 호출
+        CompletableFuture<String> actionTipFuture = actionTipService.getActionTip(content);
 
-        return DiaryConverter.toDiaryAnalysisResponse(1.0, "ActionTip");
+        // 두 CompletableFuture 조합
+        return scoreFuture.thenCombine(actionTipFuture, DiaryConverter::toDiaryAnalysisResponse).join();
     }
 
     /*

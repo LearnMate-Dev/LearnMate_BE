@@ -43,7 +43,8 @@ public enum ErrorStatus implements BaseErrorCode {
 
     // Emotion
     _INVALID_EMOTION_SCORE(HttpStatus.BAD_REQUEST, "EMOTION400", "감정 점수는 -1과 1 사이여야 합니다."),
-    _INVALID_EMOTION_SPECTRUN(HttpStatus.BAD_REQUEST, "EMOTION400", "유효하지 않은 감정 지표입니다.")
+    _INVALID_EMOTION_SPECTRUN(HttpStatus.BAD_REQUEST, "EMOTION400", "유효하지 않은 감정 지표입니다."),
+    _ANALYZE_EMOTION_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "EMOTION500", "감정 분석 API 호출 중 오류가 발생했습니다.")
     ;
 
 

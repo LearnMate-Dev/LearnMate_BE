@@ -28,7 +28,7 @@ public class DiaryConverter {
                 .build();
     }
 
-    public static DiaryAnalysisResponse toDiaryAnalysisResponse(Double score, String actionTip) {
+    public static DiaryAnalysisResponse toDiaryAnalysisResponse(Float score, String actionTip) {
         return DiaryAnalysisResponse.builder()
                 .emotionScore(score)
                 .actionTip(actionTip)

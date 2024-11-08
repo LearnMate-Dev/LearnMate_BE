@@ -1,6 +1,6 @@
 package LearnMate.dev.service;
 
-import LearnMate.dev.common.ApiException;
+import LearnMate.dev.common.exception.ApiException;
 import LearnMate.dev.common.ErrorStatus;
 import LearnMate.dev.model.dto.request.UserSignInRequest;
 import LearnMate.dev.model.dto.request.UserSignUpRequest;

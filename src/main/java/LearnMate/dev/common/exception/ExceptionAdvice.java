@@ -1,5 +1,7 @@
-package LearnMate.dev.common;
+package LearnMate.dev.common.exception;
 
+import LearnMate.dev.common.ApiResponse;
+import LearnMate.dev.common.ErrorStatus;
 import LearnMate.dev.model.dto.ErrorReasonDto;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolation;
