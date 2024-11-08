@@ -31,7 +31,7 @@ public class DiaryService {
     private final UserRepository userRepository;
     private final DiaryRepository diaryRepository;
     private final NaturalLanguageService naturalLanguageService;
-    private final ActionTipService actionTipService;
+    private final OpenAIService openAIService;
 
     /*
      * 유저의 일기 내용을 기반으로 감정을 분석하고 행동 요령을 제안함
@@ -51,7 +51,7 @@ public class DiaryService {
         CompletableFuture<Float> scoreFuture = naturalLanguageService.analyzeEmotion(content);
 
         // TODO: 행동 요령 제안 API 호출
-        CompletableFuture<String> actionTipFuture = actionTipService.getActionTip(content);
+        CompletableFuture<String> actionTipFuture = openAIService.getActionTip(content);
 
         // 두 CompletableFuture 조합
         return scoreFuture.thenCombine(actionTipFuture, DiaryConverter::toDiaryAnalysisResponse).join();
