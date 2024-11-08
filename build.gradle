@@ -56,6 +56,9 @@ dependencies {
 
 	// json
 	implementation 'org.json:json:20230227'
+
+	// google natural language
+	implementation 'com.google.cloud:google-cloud-language:2.53.0'
 }
 
 jib {
