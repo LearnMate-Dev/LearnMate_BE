@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class DiaryAnalysisResponse {
 
-    private Double emotionScore;
+    private Float emotionScore;
     private String actionTip;
 
 }
