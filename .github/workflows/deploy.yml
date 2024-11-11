@@ -43,6 +43,7 @@ jobs:
         run: |
           echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
+          echo "SSH key created."
 
       - name: Connect to EC2 and deploy
         uses: appleboy/ssh-action@master
@@ -51,9 +52,9 @@ jobs:
           username: ec2-user
           key_path: ~/.ssh/id_rsa
           script: |
-            # Stop and remove any existing application container
-            docker-compose down || true
-            # Pull the latest image
+            echo "Stopping and removing any existing application container..."
+            docker-compose -f /path/to/your/docker-compose.yml down || true
+            echo "Pulling the latest Docker image..."
             docker pull ${{ secrets.DOCKER_USERNAME }}/learnmate:latest
-            # Start application with docker-compose
-            docker-compose up -d
+            echo "Starting application with docker-compose..."
+            docker-compose -f /path/to/your/docker-compose.yml up -d
