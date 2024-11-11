@@ -51,10 +51,13 @@ jobs:
 
             # 새 컨테이너 실행
             docker run -d \
-              --name learnmate-app \
-              -p 8080:8080 \
-              -e DATABASE_URL=${{ secrets.DATABASE_URL }} \
-              -e DATABASE_USERNAME=${{ secrets.DATABASE_USERNAME }} \
-              -e DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }} \
-              ${{ secrets.DOCKER_USERNAME }}/learnmate:latest
+            --name learnmate-app \
+            -p 8080:8080 \
+            -e DATABASE_URL=${{ secrets.DATABASE_URL }} \
+            -e DATABASE_USERNAME=${{ secrets.DATABASE_USERNAME }} \
+            -e DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }} \
+            -e JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }} \
+            -e JWT_ACCESS_TOKEN_EXPIRE=${{ secrets.JWT_ACCESS_TOKEN_EXPIRE }} \
+            -e JWT_REFRESH_TOKEN_EXPIRE=${{ secrets.JWT_REFRESH_TOKEN_EXPIRE }} \
+            ${{ secrets.DOCKER_USERNAME }}/learnmate:latest
           EOF
