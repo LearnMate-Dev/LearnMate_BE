@@ -37,6 +37,17 @@ jobs:
           chmod 600 ssh_key
           scp -o StrictHostKeyChecking=no -i ssh_key docker-compose.yml $EC2_USER@$EC2_HOST:/home/$EC2_USER/
 
+      - name: EC2 서버에서 docker-compose.yml 파일 업로드 확인
+        env:
+          EC2_HOST: ${{ secrets.EC2_HOST }}
+          EC2_USER: ec2-user
+          EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
+        run: |
+          ssh -o StrictHostKeyChecking=no -i ssh_key $EC2_USER@$EC2_HOST << 'EOF'
+            echo "현재 경로: /home/$EC2_USER/"
+            ls -l /home/$EC2_USER/
+          EOF
+
       - name: EC2 서버에서 docker-compose 설치 확인 및 설치
         env:
           EC2_HOST: ${{ secrets.EC2_HOST }}
@@ -56,21 +67,6 @@ jobs:
 
             # 설치 확인
             docker-compose --version
-          EOF
-
-      - name: EC2 서버에서 docker-compose.yml 파일 존재 여부 확인
-        env:
-          EC2_HOST: ${{ secrets.EC2_HOST }}
-          EC2_USER: ec2-user
-          EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
-        run: |
-          ssh -o StrictHostKeyChecking=no -i ssh_key $EC2_USER@$EC2_HOST << 'EOF'
-            if [ -f /home/$EC2_USER/docker-compose.yml ]; then
-              echo "docker-compose.yml 파일이 존재합니다."
-            else
-              echo "docker-compose.yml 파일을 찾을 수 없습니다."
-              exit 1
-            fi
           EOF
 
       - name: EC2 서버에서 docker-compose로 배포
