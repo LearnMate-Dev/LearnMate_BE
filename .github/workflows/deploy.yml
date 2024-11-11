@@ -59,7 +59,7 @@ jobs:
               echo "Installing Docker..."
               sudo yum update -y
               sudo amazon-linux-extras install docker -y
-              sudo systemctl start docker
+              sudo service docker start
               sudo usermod -aG docker ec2-user
             fi
 
@@ -71,8 +71,8 @@ jobs:
             fi
 
             echo "Stopping and removing any existing application container..."
-            docker-compose -f /home/ec2-user/your_project_folder/docker-compose.yml down || true
+            docker-compose -f /home/ec2-user/docker-compose.yml down || true
             echo "Pulling the latest Docker image..."
             docker pull ${{ secrets.DOCKER_USERNAME }}/learnmate:latest
             echo "Starting application with docker-compose..."
-            docker-compose -f /home/ec2-user/your_project_folder/docker-compose.yml up -d
+            docker-compose -f /home/ec2-user/docker-compose.yml up -d
