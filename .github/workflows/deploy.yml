@@ -55,8 +55,8 @@ jobs:
           key_path: ~/.ssh/id_rsa
           script: |
             echo "Stopping and removing any existing application container..."
-            docker-compose -f /path/to/your/docker-compose.yml down || true
+            docker-compose -f ~/docker-compose.yml down || true  # EC2의 경로에 따라 수정 필요
             echo "Pulling the latest Docker image..."
             docker pull ${{ secrets.DOCKER_USERNAME }}/learnmate:latest
             echo "Starting application with docker-compose..."
-            docker-compose -f /path/to/your/docker-compose.yml up -d
+            docker-compose -f ~/docker-compose.yml up -d  # 경로가 EC2에 맞는지 확인 필요
