@@ -8,6 +8,8 @@ import LearnMate.dev.model.dto.response.UserSignInResponse;
 import LearnMate.dev.model.entity.User;
 import LearnMate.dev.repository.UserRepository;
 import LearnMate.dev.security.jwt.JwtProvider;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -35,24 +37,21 @@ public class UserService {
         return "회원가입 성공";
     }
 
-    public UserSignInResponse signIn(UserSignInRequest request) {
+    public String signIn(UserSignInRequest request, HttpServletResponse response, HttpSession session) {
 
         User user = userRepository.findUserByLoginId(request.getLoginId());
-        if (user == null) {
-            throw new ApiException(ErrorStatus._ACCOUNT_NOT_FOUND);
-        }
-
+        if (user == null) throw new ApiException(ErrorStatus._ACCOUNT_NOT_FOUND);
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new ApiException(ErrorStatus._WRONG_PASSWORD);
         }
-
+        // AccessToken 발급 및 응답 헤더에 추가
         String accessToken = jwtProvider.generateAccessToken(user);
-        String refreshToken = jwtProvider.generateRefreshToken(user);
+        jwtProvider.setAccessTokenInCookie(user, accessToken, response);
 
-        return UserSignInResponse.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
-                .build();
+        // RefreshToken 발급 및 세션에 저장
+        jwtProvider.storeRefreshTokenInSession(user, session);
+
+        return "로그인 성공";
 
     }
 
