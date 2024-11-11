@@ -61,7 +61,7 @@ jobs:
             echo "DOCKER_USERNAME: $DOCKER_USERNAME"  # DOCKER_USERNAME 값 확인
 
             # 최신 이미지를 가져옵니다.
-            docker pull ${DOCKER_USERNAME}/learnmate:latest
+            docker pull ${{ secrets.DOCKER_USERNAME }}/learnmate:latest
 
             # 기존 컨테이너 중지 및 제거
             docker stop learnmate-app || true
