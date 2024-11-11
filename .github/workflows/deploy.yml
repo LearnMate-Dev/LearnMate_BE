@@ -39,11 +39,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Create SSH Key Directory
+        run: mkdir -p ~/.ssh
+
       - name: Create SSH Key File
         run: |
           echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          echo "SSH key created."
 
       - name: Connect to EC2 and deploy
         uses: appleboy/ssh-action@master
