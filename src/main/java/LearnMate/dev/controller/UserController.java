@@ -23,7 +23,7 @@ public class UserController {
 
     }
 
-    @GetMapping("/signIn")
+    @PostMapping("/signIn")
     public ApiResponse<UserSignInResponse> signIn(@RequestBody @Valid UserSignInRequest request) {
 
         return ApiResponse.onSuccessData("로그인 성공", userService.signIn(request));
