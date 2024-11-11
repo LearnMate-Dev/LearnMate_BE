@@ -27,7 +27,7 @@ jobs:
       - name: JIB로 Docker 이미지 빌드 및 푸시
         run: ./gradlew jib --image=${{ secrets.DOCKER_USERNAME }}/learnmate:latest
 
-      - name: EC2에 docker-compose.yml 업로드
+      - name: EC2에 docker-compose.yml 및 .env 업로드
         env:
           EC2_HOST: ${{ secrets.EC2_HOST }}
           EC2_USER: ec2-user
@@ -36,6 +36,7 @@ jobs:
           echo "${EC2_SSH_KEY}" > ssh_key
           chmod 600 ssh_key
           scp -o StrictHostKeyChecking=no -i ssh_key docker-compose.yml $EC2_USER@$EC2_HOST:/home/ec2-user/
+          scp -o StrictHostKeyChecking=no -i ssh_key .env $EC2_USER@$EC2_HOST:/home/ec2-user/
 
       - name: EC2 서버에서 docker-compose 설치 확인 및 설치
         env:
@@ -65,7 +66,7 @@ jobs:
           EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
         run: |
           ssh -o StrictHostKeyChecking=no -i ssh_key $EC2_USER@$EC2_HOST << 'EOF'
-            cd /home/ec2-user  # docker-compose.yml이 업로드된 경로로 이동
+            cd /home/ec2-user  # docker-compose.yml과 .env 파일이 업로드된 경로로 이동
             docker-compose pull  # 최신 Docker 이미지를 가져옴
             docker-compose up -d  # 컨테이너를 백그라운드에서 실행
           EOF
