@@ -8,19 +8,6 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      secrets: read
-      actions: write
-
-    env:
-      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-      EC2_HOST: ${{ secrets.EC2_HOST }}
-      EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
-      DATABASE_URL: ${{ secrets.DATABASE_URL }}
-      DATABASE_USERNAME: ${{ secrets.DATABASE_USERNAME }}
-      DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
 
     steps:
       - name: 코드 체크아웃
@@ -32,6 +19,11 @@ jobs:
           java-version: '21'
 
       - name: GitHub Secrets 출력 확인 (디버깅)
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          EC2_HOST: ${{ secrets.EC2_HOST }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DATABASE_USERNAME: ${{ secrets.DATABASE_USERNAME }}
         run: |
           echo "DOCKER_USERNAME: $DOCKER_USERNAME"
           echo "EC2_HOST: $EC2_HOST"
@@ -39,16 +31,29 @@ jobs:
           echo "DATABASE_USERNAME: $DATABASE_USERNAME"
 
       - name: Docker 로그인
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         run: |
           echo "Docker Username: ${DOCKER_USERNAME}"  # 추가 확인
           echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
 
       - name: JIB로 Docker 이미지 빌드 및 푸시
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         run: |
           echo "Building Docker image with username: ${DOCKER_USERNAME}"
           ./gradlew jib --image=${DOCKER_USERNAME}/learnmate:latest
 
       - name: EC2에 Docker 컨테이너 배포
+        env:
+          EC2_HOST: ${{ secrets.EC2_HOST }}
+          EC2_USER: ec2-user
+          EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DATABASE_USERNAME: ${{ secrets.DATABASE_USERNAME }}
+          DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
         run: |
           echo "${EC2_SSH_KEY}" > ssh_key
           chmod 600 ssh_key
@@ -59,12 +64,4 @@ jobs:
             docker stop learnmate-app || true
             docker rm learnmate-app || true
 
-            # 새 컨테이너 실행
-            docker run -d \
-              --name learnmate-app \
-              -p 8080:8080 \
-              -e DATABASE_URL=$DATABASE_URL \
-              -e DATABASE_USERNAME=$DATABASE_USERNAME \
-              -e DATABASE_PASSWORD=$DATABASE_PASSWORD \
-              ${DOCKER_USERNAME}/learnmate:latest
-          EOF
+            # 새
