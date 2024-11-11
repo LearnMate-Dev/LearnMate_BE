@@ -60,8 +60,19 @@ jobs:
           ssh -o StrictHostKeyChecking=no -i ssh_key $EC2_USER@$EC2_HOST << 'EOF'
             echo "DOCKER_USERNAME: $DOCKER_USERNAME"  # DOCKER_USERNAME 값 확인
 
+            # 최신 이미지를 가져옵니다.
+            docker pull ${DOCKER_USERNAME}/learnmate:latest
+
             # 기존 컨테이너 중지 및 제거
             docker stop learnmate-app || true
             docker rm learnmate-app || true
 
-            # 새
+            # 새 컨테이너 실행
+            docker run -d \
+              --name learnmate-app \
+              -p 8080:8080 \
+              -e DATABASE_URL=$DATABASE_URL \
+              -e DATABASE_USERNAME=$DATABASE_USERNAME \
+              -e DATABASE_PASSWORD=$DATABASE_PASSWORD \
+              ${DOCKER_USERNAME}/learnmate:latest
+          EOF
