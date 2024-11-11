@@ -18,16 +18,35 @@ jobs:
         with:
           java-version: '21'
 
+      - name: GitHub Secrets 출력 확인 (디버깅)
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          EC2_HOST: ${{ secrets.EC2_HOST }}
+          EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DATABASE_USERNAME: ${{ secrets.DATABASE_USERNAME }}
+          DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
+        run: |
+          echo "DOCKER_USERNAME: $DOCKER_USERNAME"
+          echo "EC2_HOST: $EC2_HOST"
+          echo "DATABASE_URL: $DATABASE_URL"
+          echo "DATABASE_USERNAME: $DATABASE_USERNAME"
+
       - name: Docker 로그인
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-        run: echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
+        run: |
+          echo "Docker Username: ${DOCKER_USERNAME}"  # 추가 확인
+          echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
 
       - name: JIB로 Docker 이미지 빌드 및 푸시
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-        run: ./gradlew jib --image=${{ secrets.DOCKER_USERNAME }}/learnmate:latest
+        run: |
+          echo "Building Docker image with username: ${DOCKER_USERNAME}"
+          ./gradlew jib --image=${DOCKER_USERNAME}/learnmate:latest
 
       - name: EC2에 Docker 컨테이너 배포
         env:
