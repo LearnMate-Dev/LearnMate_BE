@@ -62,19 +62,26 @@ jobs:
               sudo systemctl start docker
               sudo systemctl enable docker
               sudo usermod -aG docker ec2-user
-              # Docker 그룹 변경이 즉시 적용되지 않으므로, SSH 세션 재접속을 위해 newgrp을 사용하지 않음
             fi
 
             # Install Docker Compose if not installed
             if ! command -v docker-compose &> /dev/null; then
               echo "Installing Docker Compose..."
-              sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/bin/docker-compose
-              sudo chmod +x /usr/bin/docker-compose
+              sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+              sudo chmod +x /usr/local/bin/docker-compose
+            fi
+
+            # Docker Compose 설치 확인
+            if ! command -v /usr/local/bin/docker-compose &> /dev/null; then
+              echo "Docker Compose installation failed"
+              exit 1
+            else
+              echo "Docker Compose installed successfully"
             fi
 
             echo "Stopping and removing any existing application container..."
-            sudo /usr/bin/docker-compose -f /home/ec2-user/learnmate/docker-compose.yml down || true
+            sudo /usr/local/bin/docker-compose -f /home/ec2-user/learnmate/docker-compose.yml down || true
             echo "Pulling the latest Docker image..."
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/learnmate:latest
             echo "Starting application with docker-compose..."
-            sudo /usr/bin/docker-compose -f /home/ec2-user/learnmate/docker-compose.yml up -d
+            sudo /usr/local/bin/docker-compose -f /home/ec2-user/learnmate/docker-compose.yml up -d
