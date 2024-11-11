@@ -25,6 +25,8 @@ jobs:
         run: echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
 
       - name: JIB로 Docker 이미지 빌드 및 푸시
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         run: ./gradlew jib --image=${{ secrets.DOCKER_USERNAME }}/learnmate:latest
 
       - name: EC2에 Docker 컨테이너 배포
