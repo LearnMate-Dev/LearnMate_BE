@@ -1,6 +1,6 @@
 package LearnMate.dev.security.jwt;
 
-import LearnMate.dev.common.ApiException;
+import LearnMate.dev.common.exception.ApiException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

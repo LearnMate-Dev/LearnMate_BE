@@ -56,4 +56,9 @@ public class UserService {
 
     }
 
+    public User findUserById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new ApiException(ErrorStatus._ACCOUNT_NOT_FOUND));
+    }
+
 }

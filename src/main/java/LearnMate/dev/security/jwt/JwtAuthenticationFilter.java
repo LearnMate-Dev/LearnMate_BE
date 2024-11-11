@@ -1,8 +1,11 @@
 package LearnMate.dev.security.jwt;
 
 import LearnMate.dev.common.ErrorStatus;
+import LearnMate.dev.model.entity.User;
+import LearnMate.dev.service.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -21,57 +24,52 @@ import java.io.IOException;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtProvider jwtProvider;
+    private final UserService userService;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
-                                    FilterChain filterChain) throws ServletException, IOException {
-
-        // 세션이 있는지 확인
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         HttpSession session = request.getSession(false);
-        if (session == null) {
-            request.setAttribute("exception", ErrorStatus._JWT_NOT_FOUND);
-            log.info("세션 없음: JWT 토큰을 찾을 수 없습니다.");
-            filterChain.doFilter(request, response);
-            return;
+        String accessToken = null;
+
+        // Retrieve accessToken from cookies
+        if (request.getCookies() != null) {
+            for (Cookie cookie : request.getCookies()) {
+                if ("accessToken".equals(cookie.getName())) {
+                    accessToken = cookie.getValue();
+                }
+            }
         }
 
-        // 세션에서 accessToken 가져오기
-        String accessToken = jwtProvider.getAccessTokenFromSession(session);
-        if (accessToken == null) {
-            request.setAttribute("exception", ErrorStatus._JWT_NOT_FOUND);
-            log.info("세션에 AccessToken 없음");
-            filterChain.doFilter(request, response);
-            return;
+        if (accessToken != null) {
+            String tokenStatus = jwtProvider.validateToken(accessToken);
+
+            if ("VALID".equals(tokenStatus)) {
+                // accessToken이 유효한 경우, 인증 정보 설정
+                Authentication authentication = jwtProvider.getAuthenticationFromToken(accessToken);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            } else if ("EXPIRED".equals(tokenStatus) && session != null) {
+                // accessToken이 만료된 경우, refreshToken으로 새로운 accessToken 발급
+                String refreshToken = (String) session.getAttribute("refreshToken");
+
+                if (refreshToken != null) {
+                    // Account 조회 및 refreshAccessToken 호출
+                    Long userId = jwtProvider.getUserId(refreshToken);
+                    User user = userService.findUserById(userId);
+                    Authentication authentication = jwtProvider.refreshAccessToken(refreshToken, response, user);
+
+                    if (authentication != null) {
+                        SecurityContextHolder.getContext().setAuthentication(authentication);
+                    }
+                }
+            } else if ("INVALID".equals(tokenStatus)) {
+                // accessToken이 불일치하거나 손상된 경우, 인증 정보 설정 없이 요청 통과
+                SecurityContextHolder.clearContext();
+            }
         }
 
-        // 토큰 검증 및 인증 설정
-        String validationResult = jwtProvider.validateToken(session);
-        if ("VALID".equals(validationResult)) {
-            Authentication authentication = jwtProvider.getAuthentication(accessToken);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            log.info("로그인 성공: SecurityContext에 인증 설정 완료");
-        } else {
-            handleInvalidToken(request, validationResult); // 유효하지 않은 토큰 처리
-        }
-
+        // 다음 필터로 요청을 전달
         filterChain.doFilter(request, response);
     }
 
-    // 유효하지 않은 토큰에 대한 예외 설정
-    private void handleInvalidToken(HttpServletRequest request, String validationResult) {
-        switch (validationResult) {
-            case "INVALID":
-                log.info("유효하지 않은 AccessToken");
-                request.setAttribute("exception", ErrorStatus._JWT_INVALID);
-                break;
-            case "EXPIRED":
-                log.info("만료된 AccessToken");
-                request.setAttribute("exception", ErrorStatus._JWT_EXPIRED);
-                break;
-            default:
-                log.info("알 수 없는 오류");
-                request.setAttribute("exception", ErrorStatus._JWT_UNKNOWN_ERROR);
-                break;
-        }
-    }
 }

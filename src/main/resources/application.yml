@@ -1,9 +1,10 @@
 spring:
   application:
-    name: The_Monitor
+    name: LearnMate
 
   config:
-    import: optional:file:.env[.properties]
+    import: "optional:file:.env[.properties]"
+
   datasource:
     url: ${DATABASE_URL}
     username: ${DATABASE_USERNAME}
