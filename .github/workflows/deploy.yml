@@ -42,6 +42,8 @@ jobs:
           echo "${EC2_SSH_KEY}" > ssh_key
           chmod 600 ssh_key
           ssh -o StrictHostKeyChecking=no -i ssh_key $EC2_USER@$EC2_HOST << 'EOF'
+            echo "DOCKER_USERNAME: $DOCKER_USERNAME"  # DOCKER_USERNAME 값 확인
+
             # 기존 컨테이너 중지 및 제거
             docker stop learnmate-app || true
             docker rm learnmate-app || true
