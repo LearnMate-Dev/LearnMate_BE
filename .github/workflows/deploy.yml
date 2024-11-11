@@ -37,19 +37,20 @@ jobs:
           chmod 600 ssh_key
           scp -o StrictHostKeyChecking=no -i ssh_key docker-compose.yml $EC2_USER@$EC2_HOST:/home/$EC2_USER/
 
-      - name: EC2 서버에서 docker-compose-plugin 설치 확인 및 설치
+      - name: EC2 서버에서 docker-compose 설치 확인 및 설치
         env:
           EC2_HOST: ${{ secrets.EC2_HOST }}
           EC2_USER: ec2-user
           EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
         run: |
           ssh -o StrictHostKeyChecking=no -i ssh_key $EC2_USER@$EC2_HOST << 'EOF'
-            if ! command -v docker compose &> /dev/null
+            if ! command -v docker-compose &> /dev/null
             then
-              echo "docker-compose-plugin이 설치되지 않았습니다. 설치를 진행합니다."
-              sudo dnf install -y docker-compose-plugin
+              echo "docker-compose가 설치되지 않았습니다. 설치를 진행합니다."
+              sudo curl -L "https://github.com/docker/compose/releases/download/$(curl -s https://api.github.com/repos/docker/compose/releases/latest | grep -oP '"tag_name": "\K(.*)(?=")')/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+              sudo chmod +x /usr/local/bin/docker-compose
             else
-              echo "docker-compose-plugin이 이미 설치되어 있습니다."
+              echo "docker-compose가 이미 설치되어 있습니다."
             fi
           EOF
 
@@ -61,6 +62,6 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no -i ssh_key $EC2_USER@$EC2_HOST << 'EOF'
             cd /home/$EC2_USER  # docker-compose.yml이 업로드된 경로로 이동
-            docker compose pull  # 최신 Docker 이미지를 가져옴 (docker compose로 변경)
-            docker compose up -d  # 컨테이너를 백그라운드에서 실행 (docker compose로 변경)
+            docker-compose pull  # 최신 Docker 이미지를 가져옴 (docker-compose로 변경)
+            docker-compose up -d  # 컨테이너를 백그라운드에서 실행 (docker-compose로 변경)
           EOF
