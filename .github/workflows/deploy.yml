@@ -35,18 +35,7 @@ jobs:
         run: |
           echo "${EC2_SSH_KEY}" > ssh_key
           chmod 600 ssh_key
-          scp -o StrictHostKeyChecking=no -i ssh_key docker-compose.yml $EC2_USER@$EC2_HOST:/home/$EC2_USER/
-
-      - name: EC2 서버에서 docker-compose.yml 파일 업로드 확인
-        env:
-          EC2_HOST: ${{ secrets.EC2_HOST }}
-          EC2_USER: ec2-user
-          EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
-        run: |
-          ssh -o StrictHostKeyChecking=no -i ssh_key $EC2_USER@$EC2_HOST << 'EOF'
-            echo "현재 경로: /home/$EC2_USER/"
-            ls -l /home/$EC2_USER/
-          EOF
+          scp -o StrictHostKeyChecking=no -i ssh_key docker-compose.yml $EC2_USER@$EC2_HOST:/home/ec2-user/
 
       - name: EC2 서버에서 docker-compose 설치 확인 및 설치
         env:
@@ -76,7 +65,7 @@ jobs:
           EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
         run: |
           ssh -o StrictHostKeyChecking=no -i ssh_key $EC2_USER@$EC2_HOST << 'EOF'
-            cd /home/$EC2_USER  # docker-compose.yml이 업로드된 경로로 이동
+            cd /home/ec2-user  # docker-compose.yml이 업로드된 경로로 이동
             docker-compose pull  # 최신 Docker 이미지를 가져옴
             docker-compose up -d  # 컨테이너를 백그라운드에서 실행
           EOF
