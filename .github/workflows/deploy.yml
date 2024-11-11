@@ -45,12 +45,6 @@ jobs:
       - name: Create SSH Key File
         run: |
           echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/id_rsa
-          cat ~/.ssh/id_rsa  # 디버그용: 키 파일 내용을 출력
-          chmod 600 ~/.ssh/id_rsa
-
-      - name: Create SSH Key File
-        run: |
-          echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
 
       - name: Connect to EC2 and deploy
@@ -58,7 +52,7 @@ jobs:
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ec2-user
-          key_path: ~/.ssh/id_rsa
+          key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             echo "Stopping and removing any existing application container..."
             docker-compose -f /home/ec2-user/your_project_folder/docker-compose.yml down || true
