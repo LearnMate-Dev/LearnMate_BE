@@ -31,7 +31,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         HttpSession session = request.getSession(false);
         String accessToken = null;
 
-        // Retrieve accessToken from cookies
         if (request.getCookies() != null) {
             for (Cookie cookie : request.getCookies()) {
                 if ("accessToken".equals(cookie.getName())) {
@@ -60,15 +59,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                     if (authentication != null) {
                         SecurityContextHolder.getContext().setAuthentication(authentication);
+                    } else {
+                        SecurityContextHolder.clearContext();
                     }
                 }
             } else if ("INVALID".equals(tokenStatus)) {
-                // accessToken이 불일치하거나 손상된 경우, 인증 정보 설정 없이 요청 통과
                 SecurityContextHolder.clearContext();
             }
         }
-
-        // 다음 필터로 요청을 전달
         filterChain.doFilter(request, response);
     }
 

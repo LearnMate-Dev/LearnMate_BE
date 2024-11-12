@@ -28,7 +28,7 @@ public class UserService {
     @Transactional
     public String signUp(UserSignUpRequest request) {
         if (userRepository.findUserByLoginId(request.getLoginId()) != null) {
-            throw new ApiException(ErrorStatus._ACCOUNT_ALREADY_EXIST);
+            throw new ApiException(ErrorStatus._USER_ALREADY_EXIST);
         }
 
         String encodedPassword = passwordEncoder.encode(request.getPassword());
@@ -40,7 +40,7 @@ public class UserService {
     public String signIn(UserSignInRequest request, HttpServletResponse response, HttpSession session) {
 
         User user = userRepository.findUserByLoginId(request.getLoginId());
-        if (user == null) throw new ApiException(ErrorStatus._ACCOUNT_NOT_FOUND);
+        if (user == null) throw new ApiException(ErrorStatus._USER_NOT_FOUND);
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new ApiException(ErrorStatus._WRONG_PASSWORD);
         }
@@ -57,7 +57,7 @@ public class UserService {
 
     public User findUserById(Long userId) {
         return userRepository.findById(userId)
-                .orElseThrow(() -> new ApiException(ErrorStatus._ACCOUNT_NOT_FOUND));
+                .orElseThrow(() -> new ApiException(ErrorStatus._USER_NOT_FOUND));
     }
 
 }

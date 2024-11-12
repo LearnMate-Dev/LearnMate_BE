@@ -2,13 +2,12 @@ package LearnMate.dev.model.entity;
 
 import LearnMate.dev.common.BaseTimeEntity;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
-@Getter
+@Getter @Builder
 @Table(name = "plans")
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Plan extends BaseTimeEntity {
     @Id
@@ -25,4 +24,11 @@ public class Plan extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
+    public void updateContent(String content) {
+        if (!content.isEmpty()) {
+            this.content = content;
+        }
+    }
+
 }

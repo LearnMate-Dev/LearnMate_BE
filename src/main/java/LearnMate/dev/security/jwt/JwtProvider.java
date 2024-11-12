@@ -3,6 +3,7 @@ package LearnMate.dev.security.jwt;
 import LearnMate.dev.common.ErrorStatus;
 import LearnMate.dev.common.exception.ApiException;
 import LearnMate.dev.model.entity.User;
+import LearnMate.dev.security.security.CustomUserDetails;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
@@ -102,9 +103,10 @@ public class JwtProvider {
 
     public Authentication getAuthenticationFromToken(String token) {
         Claims claims = getClaimsFromToken(token);
+        Long userId = claims.get("user_id", Long.class);
         String email = claims.get("email", String.class);
 
-        UserDetails userDetails = new org.springframework.security.core.userdetails.User(email, "", new ArrayList<>());
+        CustomUserDetails userDetails = new CustomUserDetails(userId, email, new ArrayList<>());
         return new UsernamePasswordAuthenticationToken(userDetails, token, userDetails.getAuthorities());
     }
 
