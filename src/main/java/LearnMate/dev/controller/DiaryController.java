@@ -18,8 +18,8 @@ public class DiaryController {
 
     private final DiaryService diaryService;
 
-    @GetMapping("/analysis")
-    public ApiResponse<DiaryAnalysisResponse> getDiaryAnalysis(
+    @PostMapping("/analysis")
+    public ApiResponse<DiaryAnalysisResponse> postDiaryAnalysis(
             // TODO: get user info from session
 //            @SessionAttribute(name = "user_id") Long userId,
             @RequestBody @Valid DiaryAnalysisRequest request) {
