@@ -13,6 +13,15 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+  cloud:
+    gcp:
+      credentials:
+        location: ${GCP_CREDENTIALS_LOCATION}  # GitHub Actions Secret을 통해 환경 변수로 관리
+
+  ai:
+    openai:
+        api-key: ${OPENAI_API_KEY}  # OpenAI API Key를 GitHub Actions Secret을 통해 환경 변수로 관리
+        model: ${OPENAI_MODEL}
 
 jwt:
   secret_key: ${JWT_SECRET_KEY}
