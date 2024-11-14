@@ -18,9 +18,9 @@ jobs:
         with:
           java-version: '21'
 
-      - name: `nlp.json` 파일 생성
+      - name: nlp.json 파일 생성
         run: |
-          echo "${{ secrets.GCP_CREDENTIALS_JSON }}" | base64 --decode > nlp.json
+          echo "${{ secrets.GCP_CREDENTIALS_JSON }}" | base64 -d > nlp.json
 
       - name: Docker 로그인
         run: |
