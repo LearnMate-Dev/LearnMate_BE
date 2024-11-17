@@ -17,6 +17,7 @@ import LearnMate.dev.model.entity.User;
 import LearnMate.dev.model.enums.EmotionSpectrum;
 import LearnMate.dev.repository.DiaryRepository;
 import LearnMate.dev.repository.UserRepository;
+import LearnMate.dev.security.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -42,6 +43,7 @@ public class DiaryService {
      * @return
      */
     public DiaryAnalysisResponse analyzeDiary(DiaryAnalysisRequest request) {
+        Long userId = getUserIdFromAuthentication();
         User user = findUserById(userId);
         validIsUserPostDiary(user);
 
