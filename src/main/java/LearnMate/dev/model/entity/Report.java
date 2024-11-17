@@ -2,15 +2,14 @@ package LearnMate.dev.model.entity;
 
 import LearnMate.dev.common.BaseTimeEntity;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
 @Entity
-@Getter
+@Getter @Builder
 @Table(name = "reports")
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Report extends BaseTimeEntity {
     @Id

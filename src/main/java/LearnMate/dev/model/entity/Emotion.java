@@ -1,5 +1,6 @@
 package LearnMate.dev.model.entity;
 
+import LearnMate.dev.common.BaseTimeEntity;
 import LearnMate.dev.model.enums.EmotionSpectrum;
 import jakarta.persistence.*;
 import lombok.*;
@@ -9,7 +10,7 @@ import lombok.*;
 @Table(name = "emotions")
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Emotion {
+public class Emotion extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "emotion_id")

@@ -6,7 +6,6 @@ import LearnMate.dev.model.converter.PlanConverter;
 import LearnMate.dev.model.dto.request.PlanPostRequest;
 import LearnMate.dev.model.dto.request.PlanPatchRequest;
 import LearnMate.dev.model.dto.response.PlanDetailResponse;
-import LearnMate.dev.model.entity.Diary;
 import LearnMate.dev.model.entity.Plan;
 import LearnMate.dev.model.entity.User;
 import LearnMate.dev.repository.PlanRepository;
