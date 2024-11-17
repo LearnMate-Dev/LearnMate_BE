@@ -20,7 +20,8 @@ jobs:
 
       - name: nlp.json 파일 생성
         run: |
-          echo "${{ secrets.GCP_CREDENTIALS_JSON }}" | base64 -d > nlp.json
+          touch ./src/main/resources/nlp.json
+          echo "${{ secrets.GCP_CREDENTIALS_JSON }}" | base64 -d > ./src/main/resources/nlp.json
 
       - name: 행동 요령 제안 프롬프트 생성
         run: |
@@ -60,7 +61,6 @@ jobs:
             -e JWT_REFRESH_TOKEN_EXPIRE=${{ secrets.JWT_REFRESH_TOKEN_EXPIRE }} \
             -e OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }} \
             -e OPENAI_MODEL=${{ secrets.OPENAI_MODEL }} \
-            -e GCP_CREDENTIALS_LOCATION="/app/nlp.json" \
-            -v $(pwd)/nlp.json:/app/nlp.json \
+            -e GCP_CREDENTIALS_LOCATION="classpath:nlp.json" \
             ${{ secrets.DOCKER_USERNAME }}/learnmate:latest
           EOF
