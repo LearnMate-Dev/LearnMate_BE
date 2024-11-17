@@ -18,6 +18,8 @@ import LearnMate.dev.model.enums.EmotionSpectrum;
 import LearnMate.dev.repository.DiaryRepository;
 import LearnMate.dev.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,7 +41,7 @@ public class DiaryService {
      * @param request
      * @return
      */
-    public DiaryAnalysisResponse analyzeDiary(Long userId, DiaryAnalysisRequest request) {
+    public DiaryAnalysisResponse analyzeDiary(DiaryAnalysisRequest request) {
         User user = findUserById(userId);
         validIsUserPostDiary(user);
 
@@ -64,7 +66,8 @@ public class DiaryService {
      * @return
      */
     @Transactional
-    public DiaryDetailResponse postDiary(Long userId, DiaryPostRequest request) {
+    public DiaryDetailResponse postDiary(DiaryPostRequest request) {
+        Long userId = getUserIdFromAuthentication();
         User user = findUserById(userId);
         validIsUserPostDiary(user);
 
@@ -88,8 +91,9 @@ public class DiaryService {
      * @return
      */
     @Transactional
-    public DiaryDetailResponse patchDiary(Long userId, DiaryPatchRequest request) {
+    public DiaryDetailResponse patchDiary(DiaryPatchRequest request) {
         // user - diary 권한 검사
+        Long userId = getUserIdFromAuthentication();
         User user = findUserById(userId);
         Diary diary = findDiaryById(request.getDiaryId());
         validIsUserAuthorizedForDiary(user, diary);
@@ -115,8 +119,9 @@ public class DiaryService {
      * @param diaryId
      */
     @Transactional
-    public void deleteDiary(Long userId, Long diaryId) {
+    public void deleteDiary(Long diaryId) {
         // user - diary 권한 검사
+        Long userId = getUserIdFromAuthentication();
         User user = findUserById(userId);
         Diary diary = findDiaryById(diaryId);
         validIsUserAuthorizedForDiary(user, diary);
@@ -130,8 +135,9 @@ public class DiaryService {
      * @param diaryId
      * @return
      */
-    public DiaryDetailResponse getDiaryDetail(Long userId, Long diaryId) {
+    public DiaryDetailResponse getDiaryDetail(Long diaryId) {
         // user - diary 권한 검사
+        Long userId = getUserIdFromAuthentication();
         User user = findUserById(userId);
         Diary diary = findDiaryById(diaryId);
         validIsUserAuthorizedForDiary(user, diary);
@@ -189,5 +195,11 @@ public class DiaryService {
     private Diary findDiaryById(Long diaryId) {
         return diaryRepository.findById(diaryId)
                 .orElseThrow(() -> new ApiException(ErrorStatus._DIARY_NOT_FOUND));
+    }
+
+    private Long getUserIdFromAuthentication() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        return userDetails.getUserId();
     }
 }
