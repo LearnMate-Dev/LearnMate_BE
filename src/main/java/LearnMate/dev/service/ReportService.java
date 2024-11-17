@@ -5,6 +5,7 @@ import LearnMate.dev.common.exception.ApiException;
 import LearnMate.dev.model.converter.ReportConverter;
 import LearnMate.dev.model.dto.response.ReportResponse;
 import LearnMate.dev.model.entity.User;
+import LearnMate.dev.model.enums.EmotionSpectrum;
 import LearnMate.dev.repository.EmotionRepository;
 import LearnMate.dev.repository.UserRepository;
 import LearnMate.dev.security.security.CustomUserDetails;
@@ -14,8 +15,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -38,12 +41,20 @@ public class ReportService {
         LocalDate twoWeekAgo = now.minusDays(14);
         List<ReportResponse.EmotionDto> emotionDtoList = getEmotionDtoList(twoWeekAgo, now, user);
 
-        // emotion 순서대로 정렬
-        emotionDtoList = emotionDtoList.stream()
-                .sorted(Comparator.comparingInt(ReportResponse.EmotionDto::getOrder))
-                .collect(Collectors.toList());
+        // 각 감정에 대한 결과 emotiondto를 mapping
+        Map<EmotionSpectrum, ReportResponse.EmotionDto> emotionDtoMap = emotionDtoList.stream()
+                .collect(Collectors.toMap(ReportResponse.EmotionDto::getEmotionSpectrum, dto -> dto));
 
-        return ReportConverter.toReportDto(emotionDtoList);
+        // 0개 나타난 emotion dto 추가 및 정렬
+        List<ReportResponse.EmotionDto> completeEmotionList = Arrays.stream(EmotionSpectrum.values())
+                .map(emotionSpectrum -> emotionDtoMap.getOrDefault(
+                        emotionSpectrum,
+                        new ReportResponse.EmotionDto(emotionSpectrum, 0L) // 기본값으로 초기화된 DTO
+                ))
+                .sorted(Comparator.comparingInt(ReportResponse.EmotionDto::getOrder)) // 정렬
+                .toList();
+
+        return ReportConverter.toReportDto(completeEmotionList);
     }
 
     private Long getUserIdFromAuthentication() {

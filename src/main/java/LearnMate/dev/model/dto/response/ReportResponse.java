@@ -16,14 +16,12 @@ public class ReportResponse {
     @NoArgsConstructor
     public static class EmotionDto {
 
-        private String emotion;
-        private String emoticon;
+        private EmotionSpectrum emotionSpectrum;
         private Long count;
         private int order;
 
         public EmotionDto(EmotionSpectrum emotion, Long count) {
-            this.emotion = emotion.getValue();
-            this.emoticon = emotion.getEmoticon();
+            this.emotionSpectrum = emotion;
             this.count = count == null ? 0 : count;
             this.order = emotion.getOrder();
         }
@@ -33,9 +31,21 @@ public class ReportResponse {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
+    public static class ReportEmotionDto {
+
+        private String emotion;
+        private String emoticon;
+        private Long count;
+
+    }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
     public static class ReportDto {
 
-        private List<EmotionDto> emotionReport;
+        private List<ReportEmotionDto> emotionReport;
 
     }
 
