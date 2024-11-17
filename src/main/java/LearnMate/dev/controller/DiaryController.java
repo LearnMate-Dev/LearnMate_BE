@@ -18,7 +18,7 @@ public class DiaryController {
 
     private final DiaryService diaryService;
 
-    @GetMapping("/analysis")
+    @PostMapping("/analysis")
     public ApiResponse<DiaryAnalysisResponse> getDiaryAnalysis(@RequestBody @Valid DiaryAnalysisRequest request) {
         return ApiResponse.onSuccessData("일기 분석 성공", diaryService.analyzeDiary(request));
     }
