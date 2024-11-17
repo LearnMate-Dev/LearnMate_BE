@@ -30,9 +30,6 @@ public class User extends BaseTimeEntity {
     private String password;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Report> reportList;
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Diary> diaryList;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
