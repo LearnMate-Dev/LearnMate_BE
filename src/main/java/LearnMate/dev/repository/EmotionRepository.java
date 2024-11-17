@@ -23,4 +23,16 @@ public interface EmotionRepository extends JpaRepository<Emotion, Long> {
             @Param(value = "startDate") LocalDate startDate,
             @Param(value = "endDate") LocalDate endDate,
             @Param(value = "user") User user);
+
+    @Query("SELECT new LearnMate.dev.model.dto.response.ReportResponse$EmotionOnDayDto(e.emotion, e.createdAt) " +
+            "FROM Emotion e " +
+            "JOIN e.diary d " +
+            "WHERE d.user = :user " +
+            "AND DATE(e.createdAt) >= :startDate " +
+            "AND DATE(e.createdAt) <= :endDate " +
+            "ORDER BY e.createdAt asc ")
+    List<ReportResponse.EmotionOnDayDto> findEmotionOnDayDtoByUser(
+            @Param(value = "startDate") LocalDate startDate,
+            @Param(value = "endDate") LocalDate endDate,
+            @Param(value = "user") User user);
 }

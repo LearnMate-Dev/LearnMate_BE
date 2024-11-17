@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class ReportResponse {
@@ -43,9 +45,50 @@ public class ReportResponse {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
+    public static class EmotionOnDayDto {
+
+        private String emotion;
+        private String emoticon;
+        private String day;
+
+        public EmotionOnDayDto(EmotionSpectrum emotion, LocalDateTime date) {
+            this.emotion = emotion.getValue();
+            this.emoticon = emotion.getEmoticon();
+            this.day = date.format(DateTimeFormatter.ofPattern("MM/dd"));
+        }
+    }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class EmotionRankDto {
+
+        private String emotion;
+        private String emoticon;
+        private Long rank;
+
+    }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
     public static class ReportDto {
 
         private List<ReportEmotionDto> emotionReport;
+
+    }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class ReportDetailDto {
+
+        private List<ReportEmotionDto> emotionReport;
+        private List<EmotionOnDayDto> emotionOnDayList;
+        private List<EmotionRankDto> emotionRankDtoList;
 
     }
 

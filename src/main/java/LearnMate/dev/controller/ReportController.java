@@ -17,4 +17,9 @@ public class ReportController {
     public ApiResponse<ReportResponse.ReportDto> getEmotionReport() {
         return ApiResponse.onSuccessData("감정 분석 레포트 조회 성공", reportService.getEmotionReport());
     }
+
+    @GetMapping("/detail")
+    public ApiResponse<ReportResponse.ReportDetailDto> getEmotionDetailReport() {
+        return ApiResponse.onSuccessData("감정 분석 상세 레포트 조회 성공", reportService.getEmotionDetailReport());
+    }
 }
