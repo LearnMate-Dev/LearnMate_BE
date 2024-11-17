@@ -67,9 +67,6 @@ dependencies {
 	// google natural language
 	implementation 'com.google.cloud:google-cloud-language:2.53.0'
 
-	// google natural language
-	implementation 'com.google.cloud:google-cloud-language:2.53.0'
-
 	// open-ai
 	implementation 'org.springframework.ai:spring-ai-openai-spring-boot-starter'
 

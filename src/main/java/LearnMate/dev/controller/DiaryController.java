@@ -18,54 +18,29 @@ public class DiaryController {
 
     private final DiaryService diaryService;
 
-    @PostMapping("/analysis")
-    public ApiResponse<DiaryAnalysisResponse> postDiaryAnalysis(
-            // TODO: get user info from session
-//            @SessionAttribute(name = "user_id") Long userId,
-            @RequestBody @Valid DiaryAnalysisRequest request) {
-
-        return ApiResponse.onSuccessData("일기 분석 성공", diaryService.analyzeDiary(1L, request));
-
+    @GetMapping("/analysis")
+    public ApiResponse<DiaryAnalysisResponse> getDiaryAnalysis(@RequestBody @Valid DiaryAnalysisRequest request) {
+        return ApiResponse.onSuccessData("일기 분석 성공", diaryService.analyzeDiary(request));
     }
 
     @PostMapping("")
-    public ApiResponse<DiaryDetailResponse> postDiary(
-            // TODO: get user info from session
-//            @SessionAttribute(name = "user_id") Long userId,
-            @RequestBody @Valid DiaryPostRequest request) {
-
-        return ApiResponse.onSuccessData("일기 작성 성공", diaryService.postDiary(1L, request));
-
+    public ApiResponse<DiaryDetailResponse> postDiary(@RequestBody @Valid DiaryPostRequest request) {
+        return ApiResponse.onSuccessData("일기 작성 성공", diaryService.postDiary(request));
     }
 
     @PatchMapping("")
-    public ApiResponse<DiaryDetailResponse> patchDiary(
-            // TODO: get user info from session
-//            @SessionAttribute(name = "user_id") Long userId,
-            @RequestBody @Valid DiaryPatchRequest request ) {
-
-        return ApiResponse.onSuccessData("일기 수정 성공", diaryService.patchDiary(1L, request));
-
+    public ApiResponse<DiaryDetailResponse> patchDiary(@RequestBody @Valid DiaryPatchRequest request ) {
+        return ApiResponse.onSuccessData("일기 수정 성공", diaryService.patchDiary(request));
     }
 
     @DeleteMapping("/{diaryId}")
-    public ApiResponse deleteDiary(
-            // TODO: get user info from session
-//            @SessionAttribute(name = "user_id") Long userId,
-            @PathVariable(value = "diaryId") Long diaryId) {
-
-        diaryService.deleteDiary(1L, diaryId);
+    public ApiResponse deleteDiary(@PathVariable(value = "diaryId") Long diaryId) {
+        diaryService.deleteDiary(diaryId);
         return ApiResponse.onSuccess("일기 삭제 성공");
-
     }
 
     @GetMapping("/{diaryId}")
-    public ApiResponse<DiaryDetailResponse> getDiaryDetail(
-            // TODO: get user info from session
-//            @SessionAttribute(name = "user_id") Long userId,
-            @PathVariable(value = "diaryId") Long diaryId) {
-
-        return ApiResponse.onSuccessData("일기 상세 조회 성공", diaryService.getDiaryDetail(1L, diaryId));
-
+    public ApiResponse<DiaryDetailResponse> getDiaryDetail( @PathVariable(value = "diaryId") Long diaryId) {
+        return ApiResponse.onSuccessData("일기 상세 조회 성공", diaryService.getDiaryDetail(diaryId));
     }
 }
