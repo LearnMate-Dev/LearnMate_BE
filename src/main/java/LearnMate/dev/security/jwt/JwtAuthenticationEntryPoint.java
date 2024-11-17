@@ -28,14 +28,18 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
         log.info("JwtAuthenticationEntryPoint - Exception Control : " + exception);
 
-        if (exception.equals(ErrorStatus._JWT_NOT_FOUND)) {
-            exceptionHandler(response, ErrorStatus._JWT_NOT_FOUND, HttpServletResponse.SC_UNAUTHORIZED);
-        } else if (exception.equals(ErrorStatus._JWT_INVALID)) {
-            exceptionHandler(response, ErrorStatus._JWT_INVALID, HttpServletResponse.SC_UNAUTHORIZED);
-        } else if (exception.equals(ErrorStatus._JWT_EXPIRED)) {
-            exceptionHandler(response, ErrorStatus._JWT_EXPIRED, HttpServletResponse.SC_UNAUTHORIZED);
-        } else {
-            exceptionHandler(response, ErrorStatus._JWT_UNKNOWN_ERROR, HttpServletResponse.SC_UNAUTHORIZED);
+        switch (exception) {
+            case _JWT_NOT_FOUND:
+                exceptionHandler(response, ErrorStatus._JWT_NOT_FOUND, HttpServletResponse.SC_UNAUTHORIZED);
+                break;
+            case _JWT_INVALID:
+                exceptionHandler(response, ErrorStatus._JWT_INVALID, HttpServletResponse.SC_UNAUTHORIZED);
+                break;
+            case _JWT_EXPIRED:
+                exceptionHandler(response, ErrorStatus._JWT_EXPIRED, HttpServletResponse.SC_UNAUTHORIZED);
+                break;
+            default:
+                exceptionHandler(response, ErrorStatus._JWT_UNKNOWN_ERROR, HttpServletResponse.SC_UNAUTHORIZED);
         }
     }
 

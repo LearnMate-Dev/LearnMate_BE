@@ -51,6 +51,8 @@ dependencies {
 
 	implementation 'me.paulschwarz:spring-dotenv:2.5.4'
 
+	implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '2.2.0'
+
 	// jwt & json
 	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
 	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
@@ -67,6 +69,7 @@ dependencies {
 
 	// open-ai
 	implementation 'org.springframework.ai:spring-ai-openai-spring-boot-starter'
+
 }
 
 dependencyManagement {
@@ -85,12 +88,8 @@ jib {
 	}
 	container {
 		ports = ['8080']
-		environment = [
-				'DATABASE_URL': System.getenv('DATABASE_URL')
-		]
 	}
 }
-
 tasks.named('test') {
 	useJUnitPlatform()
 }

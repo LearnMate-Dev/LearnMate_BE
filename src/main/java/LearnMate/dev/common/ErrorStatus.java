@@ -10,13 +10,13 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 public enum ErrorStatus implements BaseErrorCode {
 
-    _ACCOUNT_NOT_FOUND(HttpStatus.NOT_FOUND, "ACCOUNT404", "해당 계정을 찾을 수 없습니다."),
-    _ACCOUNT_NOT_EXIST(HttpStatus.NOT_FOUND, "ACCOUNT404", "가입되지 않은 이메일 주소입니다."),
-    _ACCOUNT_ALREADY_EXIST(HttpStatus.BAD_REQUEST, "ACCOUNT400", "이미 존재하는 계정입니다."),
-    _WRONG_PASSWORD(HttpStatus.BAD_REQUEST, "ACCOUNT400", "비밀번호가 일치하지 않습니다."),
-    _SAME_PASSWORD(HttpStatus.BAD_REQUEST, "ACCOUNT400", "기존 비밀번호와 동일합니다."),
-    _CERTIFIED_KEY_EXPIRED(HttpStatus.BAD_REQUEST, "ACCOUNT400", "입력 가능한 시간이 초과되었습니다."),
-    _INVALID_CERTIFIED_KEY(HttpStatus.BAD_REQUEST, "ACCOUNT400", "인증 번호가 일치하지 않습니다."),
+    _USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER404", "해당 계정을 찾을 수 없습니다."),
+    _USER_NOT_EXIST(HttpStatus.NOT_FOUND, "USER404", "가입되지 않은 이메일 주소입니다."),
+    _USER_ALREADY_EXIST(HttpStatus.BAD_REQUEST, "USER400", "이미 존재하는 계정입니다."),
+    _WRONG_PASSWORD(HttpStatus.BAD_REQUEST, "USER400", "비밀번호가 일치하지 않습니다."),
+    _SAME_PASSWORD(HttpStatus.BAD_REQUEST, "USER400", "기존 비밀번호와 동일합니다."),
+    _CERTIFIED_KEY_EXPIRED(HttpStatus.BAD_REQUEST, "USER400", "입력 가능한 시간이 초과되었습니다."),
+    _INVALID_CERTIFIED_KEY(HttpStatus.BAD_REQUEST, "USER400", "인증 번호가 일치하지 않습니다."),
 
     // 일반 응답
     _INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "COMMON500", "서버 에러, 관리자에게 문의 바랍니다."),
@@ -45,7 +45,11 @@ public enum ErrorStatus implements BaseErrorCode {
     // Emotion
     _INVALID_EMOTION_SCORE(HttpStatus.BAD_REQUEST, "EMOTION400", "감정 점수는 -1과 1 사이여야 합니다."),
     _INVALID_EMOTION_SPECTRUN(HttpStatus.BAD_REQUEST, "EMOTION400", "유효하지 않은 감정 지표입니다."),
-    _ANALYZE_EMOTION_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "EMOTION500", "감정 분석 API 호출 중 오류가 발생했습니다.")
+    _ANALYZE_EMOTION_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "EMOTION500", "감정 분석 API 호출 중 오류가 발생했습니다."),
+
+    // TODO
+    _PLAN_NOT_FOUND(HttpStatus.NOT_FOUND, "PLAN404", "해당 플랜을 찾을 수 없습니다."),
+    _USER_FORBIDDEN_PLAN(HttpStatus.FORBIDDEN, "PLAN403", "플랜에 접근 권한이 없습니다."),
     ;
 
 

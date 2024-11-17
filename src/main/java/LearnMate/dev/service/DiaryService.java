@@ -189,7 +189,7 @@ public class DiaryService {
 
     private User findUserById(Long userId) {
         return userRepository.findById(userId)
-                .orElseThrow(() -> new ApiException(ErrorStatus._ACCOUNT_NOT_FOUND));
+                .orElseThrow(() -> new ApiException(ErrorStatus._USER_NOT_FOUND));
     }
 
     private Diary findDiaryById(Long diaryId) {

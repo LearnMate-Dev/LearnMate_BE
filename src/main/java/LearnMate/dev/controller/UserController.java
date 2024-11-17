@@ -5,6 +5,8 @@ import LearnMate.dev.model.dto.request.UserSignInRequest;
 import LearnMate.dev.model.dto.request.UserSignUpRequest;
 import LearnMate.dev.model.dto.response.UserSignInResponse;
 import LearnMate.dev.service.UserService;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -23,10 +25,12 @@ public class UserController {
 
     }
 
-    @GetMapping("/signIn")
-    public ApiResponse<UserSignInResponse> signIn(@RequestBody @Valid UserSignInRequest request) {
+    @PostMapping("/signIn")
+    public ApiResponse<String> signIn(@RequestBody @Valid UserSignInRequest request,
+                                      HttpServletResponse response,
+                                      HttpSession session) {
 
-        return ApiResponse.onSuccessData("로그인 성공", userService.signIn(request));
+        return ApiResponse.onSuccessData("로그인 성공", userService.signIn(request, response, session));
 
     }
 
