@@ -26,6 +26,7 @@ public enum ErrorStatus implements BaseErrorCode {
     _UNKNOWN_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "COMMON500", "알 수 없는 오류가 발생했습니다."),
 
     _FILE_DOWNLOAD_FAILED(HttpStatus.BAD_REQUEST, "FILE404", "파일을 다운받을 수 없습니다."),
+    _PROMPT_LOAD_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "PROMPT500", "프롬프트 파일을 로드하던 중 오류가 발생했습니다."),
     _EMAIL_SEND_FAIL(HttpStatus.BAD_REQUEST, "EMAIL400", "이메일 전송에 실패했습니다."),
 
     _JWT_NOT_FOUND(HttpStatus.NOT_FOUND, "JWT404", "토큰을 찾을 수 없습니다"),

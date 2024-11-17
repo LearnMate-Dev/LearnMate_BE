@@ -50,7 +50,7 @@ public class DiaryService {
         // 감정 분석 후 감정 점수 반환
         CompletableFuture<Float> scoreFuture = naturalLanguageService.analyzeEmotion(content);
 
-        // TODO: 행동 요령 제안 API 호출
+        // 행동 요령 제안
         CompletableFuture<String> actionTipFuture = openAIService.getActionTip(content);
 
         // 두 CompletableFuture 조합
