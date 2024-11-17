@@ -27,10 +27,6 @@ public class Emotion extends BaseTimeEntity {
     @JoinColumn(name = "diary_id")
     private Diary diary;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "report_id")
-    private Report report;
-
     public void updateDiary(Diary diary) {
         this.diary = diary;
     }

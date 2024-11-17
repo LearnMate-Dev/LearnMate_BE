@@ -19,4 +19,14 @@ public interface DiaryRepository extends JpaRepository<Diary, Long> {
     boolean existsDiaryByCreatedAt(
             @Param(value = "user") User user,
             @Param(value = "created_at") LocalDate localDate);
+
+    @Query("SELECT d " +
+            "FROM Diary d " +
+            "JOIN FETCH d.emotion e " +
+            "JOIN FETCH d.actionTip ac " +
+            "WHERE d.user.id = :userId " +
+            "AND DATE(d.createdAt) = :now")
+    Diary findDiaryCreatedAtNowByUserId(
+            @Param(value = "now") LocalDate now,
+            @Param(value = "userId") Long userId);
 }
