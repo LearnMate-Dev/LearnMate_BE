@@ -13,14 +13,26 @@ public class ReportConverter {
                 .count(emotionDto.getCount())
                 .build();
     }
-    public static ReportResponse.ReportDto toReportDto(List<ReportResponse.EmotionDto> emotionDtoList) {
 
-        List<ReportResponse.ReportEmotionDto> reportEmotionDtoList = emotionDtoList.stream()
+    public static List<ReportResponse.ReportEmotionDto> toReportEmotionDtoList(List<ReportResponse.EmotionDto> emotionDtoList) {
+        return emotionDtoList.stream()
                 .map(ReportConverter::toReportEmotionDto)
                 .toList();
+    }
 
+    public static ReportResponse.ReportDto toReportDto(List<ReportResponse.ReportEmotionDto> reportEmotionDtoList) {
         return ReportResponse.ReportDto.builder()
                 .emotionReport(reportEmotionDtoList)
+                .build();
+    }
+
+    public static ReportResponse.ReportDetailDto toReportDetailDto(List<ReportResponse.ReportEmotionDto> reportEmotionDtoList,
+                                                                   List<ReportResponse.EmotionOnDayDto> emotionOnDayDtoList,
+                                                                   List<ReportResponse.EmotionRankDto> emotionRankDtoList) {
+        return ReportResponse.ReportDetailDto.builder()
+                .emotionReport(reportEmotionDtoList)
+                .emotionOnDayList(emotionOnDayDtoList)
+                .emotionRankDtoList(emotionRankDtoList)
                 .build();
     }
 
