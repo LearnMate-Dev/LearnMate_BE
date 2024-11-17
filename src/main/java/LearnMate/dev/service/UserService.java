@@ -2,17 +2,28 @@ package LearnMate.dev.service;
 
 import LearnMate.dev.common.exception.ApiException;
 import LearnMate.dev.common.ErrorStatus;
+import LearnMate.dev.model.converter.HomeConverter;
 import LearnMate.dev.model.dto.request.UserSignInRequest;
 import LearnMate.dev.model.dto.request.UserSignUpRequest;
+import LearnMate.dev.model.dto.response.HomeResponse;
+import LearnMate.dev.model.entity.Diary;
+import LearnMate.dev.model.entity.Plan;
 import LearnMate.dev.model.entity.User;
+import LearnMate.dev.repository.DiaryRepository;
+import LearnMate.dev.repository.PlanRepository;
 import LearnMate.dev.repository.UserRepository;
 import LearnMate.dev.security.jwt.JwtProvider;
+import LearnMate.dev.security.security.CustomUserDetails;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
 
 @Service
 @Transactional(readOnly = true)
@@ -23,6 +34,8 @@ public class UserService {
     private final JwtProvider jwtProvider;
 
     private final UserRepository userRepository;
+    private final DiaryRepository diaryRepository;
+    private final PlanRepository planRepository;
 
     @Transactional
     public String signUp(UserSignUpRequest request) {
@@ -62,6 +75,28 @@ public class UserService {
             throw new ApiException(ErrorStatus._USER_ALREADY_EXIST);
     }
 
+    /*
+     * user의 홈 화면을 조회 : 당일 작성된 Diary와 가장 최근에 작성된 TodoGuide 정보를 반환
+     * @return
+     */
+    public HomeResponse.HomeDto getHome() {
+        Long userId = getUserIdFromAuthentication();
+
+        Diary diary = findRecentDiaryByUserId(userId);
+        Plan plan = findRecentPlanByUserId(userId);
+
+        return HomeConverter.toHomeDto(diary, plan);
+    }
+
+    private Plan findRecentPlanByUserId(Long userId) {
+        return planRepository.findFirstByUserIdOrderByCreatedAtDesc(userId);
+    }
+
+    private Diary findRecentDiaryByUserId(Long userId) {
+        LocalDate now = LocalDate.now();
+        return diaryRepository.findDiaryCreatedAtNowByUserId(now, userId);
+    }
+
     public User findUserById(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new ApiException(ErrorStatus._USER_NOT_FOUND));
@@ -72,4 +107,9 @@ public class UserService {
                 .orElseThrow(() -> new ApiException(ErrorStatus._USER_NOT_FOUND));
     }
 
+    private Long getUserIdFromAuthentication() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        return userDetails.getUserId();
+    }
 }
