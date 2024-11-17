@@ -67,3 +67,6 @@ out/
 
 ### nlp.json
 src/main/resources/nlp.json
+
+### prompt
+src/main/resources/*.txt
