@@ -35,6 +35,18 @@ jobs:
           echo "${{ secrets.TODO_GUIDE_PROMPT }}" > ./src/main/resources/todo-guide-prompt.txt
         shell: bash
 
+      - name: 칭찬 카드 내용 프롬프트 생성
+        run: |
+          touch ./src/main/resources/compliment-card-content-prompt.txt
+          echo "${{ secrets.COMPLIMENT_CARD_CONTENT_PROMPT }}" > ./src/main/resources/compliment-card-content-prompt.txt
+        shell: bash
+
+      - name: 칭찬 카드 제목 프롬프트 생성
+        run: |
+          touch ./src/main/resources/compliment-card-title-prompt.txt
+          echo "${{ secrets.COMPLIMENT_CARD_TITLE_PROMPT }}" > ./src/main/resources/compliment-card-title-prompt.txt
+        shell: bash
+
       - name: Docker 로그인
         run: |
           echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin

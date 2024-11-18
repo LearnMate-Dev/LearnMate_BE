@@ -35,6 +35,9 @@ public class User extends BaseTimeEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Plan> planList;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<ComplimentCard> complimentCardList;
+
 
     @Builder
     public User(String name, String loginId, String password) {
