@@ -12,6 +12,7 @@ import java.util.concurrent.CompletableFuture;
 @RequiredArgsConstructor
 public class OpenAIService {
     private final String ACTION_TIP_PROMPT = ResourceLoader.getResourceContent("action-tip-prompt.txt");
+    private final String TODO_GUIDE_PROMPT = ResourceLoader.getResourceContent("todo-guide-prompt.txt");
     private final OpenAiChatModel chatModel;
 
     @Async
@@ -21,4 +22,12 @@ public class OpenAIService {
 
         return CompletableFuture.completedFuture(text);
     }
+
+
+    public String getTodoGuide(String content) {
+
+        return chatModel.call(TODO_GUIDE_PROMPT + content);
+
+    }
+
 }

@@ -22,10 +22,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class PlanService {
 
-    private final UserRepository userRepository;
+    private final OpenAIService openAIService;
 
+    private final UserRepository userRepository;
     private final PlanRepository planRepository;
 
+    // 최신 가이드 조회
     public String getTodos() {
 
         Long userId = getUserIdFromAuthentication();
@@ -36,6 +38,7 @@ public class PlanService {
 
     }
 
+    // Todo 생성
     @Transactional
     public String postTodo(PlanPostRequest request) {
 
@@ -45,13 +48,14 @@ public class PlanService {
 
         User user = findUserById(userId);
 
-        String guide = ""; // 이후 open api 연결
+        String guide = openAIService.getTodoGuide(request.getContent());
 
         planRepository.save(PlanConverter.toPlan(request.getContent(), user, guide));
 
         return "Todo 생성";
     }
 
+    // Todo 상세 조회
     public PlanDetailResponse getTodoDetail(Long todoId) {
 
         Long userId = getUserIdFromAuthentication();
@@ -62,6 +66,7 @@ public class PlanService {
 
     }
 
+    // Todo 수정
     @Transactional
     public String patchTodo(Long todoId, PlanPatchRequest request) {
 
@@ -80,6 +85,7 @@ public class PlanService {
         return "Todo 수정";
     }
 
+    // Todo 삭제
     @Transactional
     public String deleteTodo(Long todoId) {
 
