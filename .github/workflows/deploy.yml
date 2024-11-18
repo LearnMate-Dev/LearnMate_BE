@@ -29,6 +29,12 @@ jobs:
           echo "${{ secrets.ACTION_TIP_PROMPT }}" > ./src/main/resources/action-tip-prompt.txt
         shell: bash
 
+      - name: Todo Guide 프롬프트 생성
+        run: |
+          touch ./src/main/resources/todo-guide-prompt.txt
+          echo "${{ secrets.TODO_GUIDE_PROMPT }}" > ./src/main/resources/todo-guide-prompt.txt
+        shell: bash
+
       - name: Docker 로그인
         run: |
           echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
