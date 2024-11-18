@@ -52,7 +52,7 @@ public class PlanService {
 
         planRepository.save(PlanConverter.toPlan(request.getContent(), user, guide));
 
-        return "Todo 생성";
+        return guide;
     }
 
     // Todo 상세 조회

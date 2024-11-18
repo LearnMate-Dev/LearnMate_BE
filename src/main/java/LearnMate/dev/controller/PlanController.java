@@ -23,7 +23,7 @@ public class PlanController {
 
     @PostMapping()
     public ApiResponse<String> createTodo(@RequestBody @Valid PlanPostRequest request) {
-        return ApiResponse.onSuccess(planService.postTodo(request));
+        return ApiResponse.onSuccessData("Todo Guide 생성", planService.postTodo(request));
     }
 
     @GetMapping("/{todoId}")
