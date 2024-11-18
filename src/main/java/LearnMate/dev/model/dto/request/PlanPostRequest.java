@@ -1,6 +1,7 @@
 package LearnMate.dev.model.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -10,5 +11,10 @@ public class PlanPostRequest {
 
     @NotBlank(message = "계획 내용은 필수입니다.")
     private String content;
+
+    @Builder
+    public PlanPostRequest(String content) {
+        this.content = content;
+    }
 
 }
