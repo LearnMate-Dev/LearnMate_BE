@@ -50,6 +50,9 @@ public enum ErrorStatus implements BaseErrorCode {
     // TODO
     _PLAN_NOT_FOUND(HttpStatus.NOT_FOUND, "PLAN404", "해당 플랜을 찾을 수 없습니다."),
     _USER_FORBIDDEN_PLAN(HttpStatus.FORBIDDEN, "PLAN403", "플랜에 접근 권한이 없습니다."),
+
+    // ComplimentCard
+    _COMPLIMENT_CARD_NOT_FOUND(HttpStatus.NOT_FOUND, "COMPLIMENT404", "해당 칭찬카드를 찾을 수 없습니다."),
     ;
 
 

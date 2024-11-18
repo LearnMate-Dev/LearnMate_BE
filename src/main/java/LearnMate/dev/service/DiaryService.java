@@ -3,6 +3,7 @@ package LearnMate.dev.service;
 import LearnMate.dev.common.exception.ApiException;
 import LearnMate.dev.common.ErrorStatus;
 import LearnMate.dev.model.converter.ActionTipConverter;
+import LearnMate.dev.model.converter.ComplimentCardConverter;
 import LearnMate.dev.model.converter.DiaryConverter;
 import LearnMate.dev.model.converter.EmotionConverter;
 import LearnMate.dev.model.dto.request.DiaryAnalysisRequest;
@@ -10,11 +11,9 @@ import LearnMate.dev.model.dto.request.DiaryPatchRequest;
 import LearnMate.dev.model.dto.request.DiaryPostRequest;
 import LearnMate.dev.model.dto.response.DiaryAnalysisResponse;
 import LearnMate.dev.model.dto.response.DiaryDetailResponse;
-import LearnMate.dev.model.entity.ActionTip;
-import LearnMate.dev.model.entity.Diary;
-import LearnMate.dev.model.entity.Emotion;
-import LearnMate.dev.model.entity.User;
+import LearnMate.dev.model.entity.*;
 import LearnMate.dev.model.enums.EmotionSpectrum;
+import LearnMate.dev.repository.ComplimentCardRepository;
 import LearnMate.dev.repository.DiaryRepository;
 import LearnMate.dev.repository.UserRepository;
 import LearnMate.dev.security.security.CustomUserDetails;
@@ -31,8 +30,11 @@ import java.util.concurrent.CompletableFuture;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class DiaryService {
+
     private final UserRepository userRepository;
     private final DiaryRepository diaryRepository;
+    private final ComplimentCardRepository complimentCardRepository;
+
     private final NaturalLanguageService naturalLanguageService;
     private final OpenAIService openAIService;
 
@@ -69,6 +71,7 @@ public class DiaryService {
      */
     @Transactional
     public DiaryDetailResponse postDiary(DiaryPostRequest request) {
+
         Long userId = getUserIdFromAuthentication();
         User user = findUserById(userId);
         validIsUserPostDiary(user);
@@ -83,7 +86,11 @@ public class DiaryService {
         Diary diary = createDiary(user, request, emotionSpectrum);
         diaryRepository.save(diary);
 
+        ComplimentCard complimentCard = createComplimentCard(user, request.getContent(), diary.getId());
+        complimentCardRepository.save(complimentCard);
+
         return DiaryConverter.toDiaryDetailResponse(diary);
+
     }
 
     /*
@@ -156,6 +163,14 @@ public class DiaryService {
         actionTip.updateDiary(diary);
 
         return diary;
+    }
+
+    private ComplimentCard createComplimentCard(User user, String content, Long diaryId) {
+
+        String complimentContent = openAIService.getComplimentCardContent(content);
+        String complimentTitle = openAIService.getComplimentCardTitle(complimentContent);
+
+        return ComplimentCardConverter.toComplimentCard(user, complimentTitle, complimentContent, diaryId);
     }
 
     private void validIsUserPostDiary(User user) {
