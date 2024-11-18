@@ -25,9 +25,10 @@ public class Plan extends BaseTimeEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    public void updateContent(String content) {
+    public void updateContentAndGuide(String content, String guide) {
         if (!content.isEmpty()) {
             this.content = content;
+            this.guide = guide;
         }
     }
 

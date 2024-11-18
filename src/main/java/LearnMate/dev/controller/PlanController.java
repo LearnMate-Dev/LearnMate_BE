@@ -34,7 +34,7 @@ public class PlanController {
     @PatchMapping("/{todoId}")
     public ApiResponse<String> patchTodo(@PathVariable("todoId") Long todoId,
                                           @RequestBody @Valid PlanPatchRequest request) {
-        return ApiResponse.onSuccess(planService.patchTodo(todoId, request));
+        return ApiResponse.onSuccessData("Todo Guide 재생성", planService.patchTodo(todoId, request));
     }
 
     @DeleteMapping("/{todoId}")

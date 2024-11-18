@@ -48,7 +48,7 @@ public class PlanService {
 
         User user = findUserById(userId);
 
-        String guide = openAIService.getTodoGuide(request.getContent());
+        String guide = getTodoGuide(request.getContent());
 
         planRepository.save(PlanConverter.toPlan(request.getContent(), user, guide));
 
@@ -80,9 +80,11 @@ public class PlanService {
 
         validIsUserAuthorizedForPlan(user, plan);
 
-        plan.updateContent(request.getContent());
+        String guide = getTodoGuide(request.getContent());
 
-        return "Todo 수정";
+        plan.updateContentAndGuide(request.getContent(), guide);
+
+        return guide;
     }
 
     // Todo 삭제
@@ -129,6 +131,10 @@ public class PlanService {
     private void validIsUserAuthorizedForPlan(User user, Plan plan) {
         if (!plan.getUser().equals(user))
             throw new ApiException(ErrorStatus._USER_FORBIDDEN_PLAN);
+    }
+
+    private String getTodoGuide(String content) {
+        return openAIService.getTodoGuide(content);
     }
 
 }
