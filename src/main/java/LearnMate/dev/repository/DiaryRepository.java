@@ -36,10 +36,10 @@ public interface DiaryRepository extends JpaRepository<Diary, Long> {
             "FROM Diary d " +
             "JOIN d.emotion e " +
             "WHERE d.user.id = :userId " +
-            "AND YEAR(d.createdAt) = YEAR(:now) " +
-            "AND MONTH(d.createdAt) = MONTH(:now) " +
+            "AND YEAR(d.createdAt) = YEAR(:date) " +
+            "AND MONTH(d.createdAt) = MONTH(:date) " +
             "ORDER BY d.createdAt")
     List<DiaryCalendarResponse.DiaryDto> findDiaryCreatedAtMonth(
-            @Param(value = "now") LocalDate now,
+            @Param(value = "date") LocalDate date,
             @Param(value = "userId") Long userId);
 }

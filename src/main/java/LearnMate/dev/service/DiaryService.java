@@ -165,12 +165,11 @@ public class DiaryService {
      * 해당 월에 나타난 감정 리스트를 날짜와 함께 반환
      * @return
      */
-    public DiaryCalendarResponse.DiaryCalendarDto getDiaryCalendar() {
+    public DiaryCalendarResponse.DiaryCalendarDto getDiaryCalendar(LocalDate date) {
         Long userId = getUserIdFromAuthentication();
 
         // 해당 월에 나타난 감정 리스트
-        LocalDate now = LocalDate.now();
-        List<DiaryCalendarResponse.DiaryDto> diaryDtoList = diaryRepository.findDiaryCreatedAtMonth(now, userId);
+        List<DiaryCalendarResponse.DiaryDto> diaryDtoList = diaryRepository.findDiaryCreatedAtMonth(date, userId);
 
         return DiaryConverter.toDiaryCalendarResponse(diaryDtoList);
     }
