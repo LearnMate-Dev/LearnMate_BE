@@ -23,7 +23,7 @@ public class DiaryCalendarResponse {
         private String emoticon;
 
         public DiaryDto(Long diaryId, LocalDateTime date, EmotionSpectrum emoticon) {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
             this.diaryId = diaryId;
             this.date = date.format(formatter);
