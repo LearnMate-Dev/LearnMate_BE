@@ -37,7 +37,7 @@ public class UserController {
     }
 
     @GetMapping("/home")
-    public ApiResponse<HomeResponse.HomeDto> getHome() {
+    public ApiResponse<HomeResponse> getHome() {
         return ApiResponse.onSuccessData("홈 화면 조회 성공", userService.getHome());
     }
 
