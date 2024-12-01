@@ -9,6 +9,7 @@ import LearnMate.dev.model.dto.request.DiaryAnalysisRequest;
 import LearnMate.dev.model.dto.request.DiaryPatchRequest;
 import LearnMate.dev.model.dto.request.DiaryPostRequest;
 import LearnMate.dev.model.dto.response.DiaryAnalysisResponse;
+import LearnMate.dev.model.dto.response.DiaryCalendarResponse;
 import LearnMate.dev.model.dto.response.DiaryDetailResponse;
 import LearnMate.dev.model.entity.ActionTip;
 import LearnMate.dev.model.entity.Diary;
@@ -25,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 @Service
@@ -84,6 +86,18 @@ public class DiaryService {
         diaryRepository.save(diary);
 
         return DiaryConverter.toDiaryDetailResponse(diary);
+    }
+
+    @Transactional
+    public Diary createDiary(User user, DiaryPostRequest request, EmotionSpectrum emotionSpectrum) {
+        Emotion emotion = EmotionConverter.toEmotion(request.getScore(), emotionSpectrum);
+        ActionTip actionTip = ActionTipConverter.toActionTip(request.getActionTip());
+        Diary diary = DiaryConverter.toDiary(request.getContent(), user, emotion, actionTip);
+
+        emotion.updateDiary(diary);
+        actionTip.updateDiary(diary);
+
+        return diary;
     }
 
     /*
@@ -147,15 +161,18 @@ public class DiaryService {
         return DiaryConverter.toDiaryDetailResponse(diary);
     }
 
-    private Diary createDiary(User user, DiaryPostRequest request, EmotionSpectrum emotionSpectrum) {
-        Emotion emotion = EmotionConverter.toEmotion(request.getScore(), emotionSpectrum);
-        ActionTip actionTip = ActionTipConverter.toActionTip(request.getActionTip());
-        Diary diary = DiaryConverter.toDiary(request.getContent(), user, emotion, actionTip);
+    /*
+     * 해당 월에 나타난 감정 리스트를 날짜와 함께 반환
+     * @return
+     */
+    public DiaryCalendarResponse.DiaryCalendarDto getDiaryCalendar() {
+        Long userId = getUserIdFromAuthentication();
 
-        emotion.updateDiary(diary);
-        actionTip.updateDiary(diary);
+        // 해당 월에 나타난 감정 리스트
+        LocalDate now = LocalDate.now();
+        List<DiaryCalendarResponse.DiaryDto> diaryDtoList = diaryRepository.findDiaryCreatedAtMonth(now, userId);
 
-        return diary;
+        return DiaryConverter.toDiaryCalendarResponse(diaryDtoList);
     }
 
     private void validIsUserPostDiary(User user) {
