@@ -1,5 +1,6 @@
 package LearnMate.dev.repository;
 
+import LearnMate.dev.model.dto.response.DiaryCalendarResponse;
 import LearnMate.dev.model.entity.Diary;
 import LearnMate.dev.model.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -8,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Repository
 public interface DiaryRepository extends JpaRepository<Diary, Long> {
@@ -28,5 +30,16 @@ public interface DiaryRepository extends JpaRepository<Diary, Long> {
             "AND DATE(d.createdAt) = :now")
     Diary findDiaryCreatedAtNowByUserId(
             @Param(value = "now") LocalDate now,
+            @Param(value = "userId") Long userId);
+
+    @Query("SELECT new LearnMate.dev.model.dto.response.DiaryCalendarResponse$DiaryDto(d.id, d.createdAt, e.emotion) " +
+            "FROM Diary d " +
+            "JOIN d.emotion e " +
+            "WHERE d.user.id = :userId " +
+            "AND YEAR(d.createdAt) = YEAR(:date) " +
+            "AND MONTH(d.createdAt) = MONTH(:date) " +
+            "ORDER BY d.createdAt")
+    List<DiaryCalendarResponse.DiaryDto> findDiaryCreatedAtMonth(
+            @Param(value = "date") LocalDate date,
             @Param(value = "userId") Long userId);
 }

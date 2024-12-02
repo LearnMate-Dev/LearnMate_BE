@@ -79,13 +79,13 @@ public class UserService {
      * user의 홈 화면을 조회 : 당일 작성된 Diary와 가장 최근에 작성된 TodoGuide 정보를 반환
      * @return
      */
-    public HomeResponse.HomeDto getHome() {
+    public HomeResponse getHome() {
         Long userId = getUserIdFromAuthentication();
 
         Diary diary = findRecentDiaryByUserId(userId);
         Plan plan = findRecentPlanByUserId(userId);
 
-        return HomeConverter.toHomeDto(diary, plan);
+        return HomeConverter.toHomeResponse(diary, plan);
     }
 
     private Plan findRecentPlanByUserId(Long userId) {

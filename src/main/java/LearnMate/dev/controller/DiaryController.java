@@ -5,11 +5,15 @@ import LearnMate.dev.model.dto.request.DiaryAnalysisRequest;
 import LearnMate.dev.model.dto.request.DiaryPatchRequest;
 import LearnMate.dev.model.dto.request.DiaryPostRequest;
 import LearnMate.dev.model.dto.response.DiaryAnalysisResponse;
+import LearnMate.dev.model.dto.response.DiaryCalendarResponse;
 import LearnMate.dev.model.dto.response.DiaryDetailResponse;
 import LearnMate.dev.service.DiaryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
 
 @RestController
 @RequiredArgsConstructor
@@ -42,5 +46,13 @@ public class DiaryController {
     @GetMapping("/{diaryId}")
     public ApiResponse<DiaryDetailResponse> getDiaryDetail( @PathVariable(value = "diaryId") Long diaryId) {
         return ApiResponse.onSuccessData("일기 상세 조회 성공", diaryService.getDiaryDetail(diaryId));
+    }
+
+    @GetMapping("/calendar")
+    public ApiResponse<DiaryCalendarResponse.DiaryCalendarDto> getDiaryCalendar(
+            @RequestParam(value = "date")
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
+    ) {
+        return ApiResponse.onSuccessData("캘린더 조회 성공", diaryService.getDiaryCalendar(date));
     }
 }

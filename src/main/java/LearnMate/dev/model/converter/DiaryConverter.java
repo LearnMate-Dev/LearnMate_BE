@@ -1,11 +1,14 @@
 package LearnMate.dev.model.converter;
 
 import LearnMate.dev.model.dto.response.DiaryAnalysisResponse;
+import LearnMate.dev.model.dto.response.DiaryCalendarResponse;
 import LearnMate.dev.model.dto.response.DiaryDetailResponse;
 import LearnMate.dev.model.entity.ActionTip;
 import LearnMate.dev.model.entity.Diary;
 import LearnMate.dev.model.entity.Emotion;
 import LearnMate.dev.model.entity.User;
+
+import java.util.List;
 
 public class DiaryConverter {
 
@@ -32,6 +35,12 @@ public class DiaryConverter {
         return DiaryAnalysisResponse.builder()
                 .emotionScore(score)
                 .actionTip(actionTip)
+                .build();
+    }
+
+    public static DiaryCalendarResponse.DiaryCalendarDto toDiaryCalendarResponse(List<DiaryCalendarResponse.DiaryDto> diaryDtoList) {
+        return DiaryCalendarResponse.DiaryCalendarDto.builder()
+                .diaryCalendar(diaryDtoList)
                 .build();
     }
 
