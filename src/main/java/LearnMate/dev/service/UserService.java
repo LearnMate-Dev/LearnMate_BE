@@ -3,9 +3,11 @@ package LearnMate.dev.service;
 import LearnMate.dev.common.exception.ApiException;
 import LearnMate.dev.common.ErrorStatus;
 import LearnMate.dev.model.converter.HomeConverter;
+import LearnMate.dev.model.converter.TokenConverter;
 import LearnMate.dev.model.dto.request.UserSignInRequest;
 import LearnMate.dev.model.dto.request.UserSignUpRequest;
 import LearnMate.dev.model.dto.response.HomeResponse;
+import LearnMate.dev.model.dto.response.TokenDto;
 import LearnMate.dev.model.entity.Diary;
 import LearnMate.dev.model.entity.Plan;
 import LearnMate.dev.model.entity.User;
@@ -48,7 +50,7 @@ public class UserService {
         return "회원가입 성공";
     }
 
-    public String signIn(UserSignInRequest request, HttpServletResponse response, HttpSession session) {
+    public TokenDto signIn(UserSignInRequest request, HttpServletResponse response, HttpSession session) {
 
         User user = findUserByLoginId(request.getLoginId());
         validPassword(request.getPassword(), user.getPassword());
@@ -59,7 +61,7 @@ public class UserService {
         // RefreshToken 발급 및 세션에 저장
         jwtProvider.storeRefreshTokenInSession(user, session);
 
-        return "accessToken: " + accessToken;
+        return TokenConverter.toToken(accessToken);
 
     }
 
