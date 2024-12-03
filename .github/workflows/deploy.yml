@@ -35,16 +35,10 @@ jobs:
           echo "${{ secrets.TODO_GUIDE_PROMPT }}" > ./src/main/resources/todo-guide-prompt.txt
         shell: bash
 
-      - name: 칭찬 카드 내용 프롬프트 생성
+      - name: 칭찬 카드 프롬프트 생성
         run: |
           touch ./src/main/resources/compliment-card-content-prompt.txt
-          echo "${{ secrets.COMPLIMENT_CARD_CONTENT_PROMPT }}" > ./src/main/resources/compliment-card-content-prompt.txt
-        shell: bash
-
-      - name: 칭찬 카드 제목 프롬프트 생성
-        run: |
-          touch ./src/main/resources/compliment-card-title-prompt.txt
-          echo "${{ secrets.COMPLIMENT_CARD_TITLE_PROMPT }}" > ./src/main/resources/compliment-card-title-prompt.txt
+          echo "${{ secrets.COMPLIMENT_CARD_KEYWORD_PROMPT }}" > ./src/main/resources/compliment-card-keyword-prompt.txt
         shell: bash
 
       - name: Docker 로그인
@@ -79,6 +73,7 @@ jobs:
             -e JWT_REFRESH_TOKEN_EXPIRE=${{ secrets.JWT_REFRESH_TOKEN_EXPIRE }} \
             -e OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }} \
             -e OPENAI_MODEL=${{ secrets.OPENAI_MODEL }} \
-            -e GCP_CREDENTIALS_LOCATION="classpath:nlp.json" \
+            -e GCP_CREDENTIALS_LOCATION="/app/nlp.json" \
+            -v $(pwd)/nlp.json:/app/nlp.json \
             ${{ secrets.DOCKER_USERNAME }}/learnmate:latest
           EOF
