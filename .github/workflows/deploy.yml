@@ -74,6 +74,5 @@ jobs:
             -e OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }} \
             -e OPENAI_MODEL=${{ secrets.OPENAI_MODEL }} \
             -e GCP_CREDENTIALS_LOCATION="/app/resources/nlp.json" \
-            -v /absolute/path/to/nlp.json:/app/resources/nlp.json \
             ${{ secrets.DOCKER_USERNAME }}/learnmate:latest
           EOF
