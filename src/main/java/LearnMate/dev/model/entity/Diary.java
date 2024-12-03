@@ -28,6 +28,10 @@ public class Diary extends BaseTimeEntity {
     @OneToOne(mappedBy = "diary", cascade = CascadeType.ALL, orphanRemoval = true)
     private ActionTip actionTip;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "compliments_id")
+    private ComplimentCard complimentCard;
+
     public void updateContent(String content) {
         if (!content.isEmpty()) {
             this.content = content;
