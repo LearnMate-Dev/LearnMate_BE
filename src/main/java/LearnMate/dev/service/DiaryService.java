@@ -50,7 +50,7 @@ public class DiaryService {
     public DiaryAnalysisResponse analyzeDiary(DiaryAnalysisRequest request) {
         Long userId = getUserIdFromAuthentication();
         User user = findUserById(userId);
-        validIsUserPostDiary(user);
+//        validIsUserPostDiary(user);
 
         // content 길이 검사
         String content = request.getContent();
@@ -77,7 +77,7 @@ public class DiaryService {
 
         Long userId = getUserIdFromAuthentication();
         User user = findUserById(userId);
-        validIsUserPostDiary(user);
+//        validIsUserPostDiary(user);
 
         // content 길이 검사
         validContentLength(request.getContent());

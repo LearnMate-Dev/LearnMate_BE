@@ -5,10 +5,12 @@ import LearnMate.dev.common.exception.ApiException;
 import LearnMate.dev.model.converter.ComplimentCardConverter;
 import LearnMate.dev.model.dto.response.ComplimentCardListResponse;
 import LearnMate.dev.model.dto.response.ComplimentCardResponse;
+import LearnMate.dev.model.dto.response.DiarySimpleResponse;
 import LearnMate.dev.model.entity.ComplimentCard;
 import LearnMate.dev.model.entity.User;
 import LearnMate.dev.model.enums.ComplimentKeyword;
 import LearnMate.dev.repository.ComplimentCardRepository;
+import LearnMate.dev.repository.DiaryRepository;
 import LearnMate.dev.security.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -24,6 +26,7 @@ import java.util.List;
 public class ComplimentCardService {
 
     private final ComplimentCardRepository complimentCardRepository;
+    private final DiaryRepository diaryRepository;
     private final OpenAIService openAIService;
 
 
@@ -86,7 +89,15 @@ public class ComplimentCardService {
     }
 
     // 칭찬카드 관련 일기 리스트 조회
+    public List<DiarySimpleResponse> getComplimentCardDiaries(Long complimentId) {
 
+        Long userId = getUserIdFromAuthentication();
+        ComplimentCard complimentCard = findComplimentCardById(complimentId);
+
+        validIsUserAuthorizedForComplimentCard(userId, complimentCard);
+
+        return diaryRepository.findDiaryByComplimentCard(complimentCard);
+    }
 
     private Long getUserIdFromAuthentication() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
