@@ -17,7 +17,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -29,15 +28,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         HttpSession session = request.getSession(false);
-        String accessToken = null;
-
-        if (request.getCookies() != null) {
-            for (Cookie cookie : request.getCookies()) {
-                if ("accessToken".equals(cookie.getName())) {
-                    accessToken = cookie.getValue();
-                }
-            }
-        }
+        String accessToken = extractAccessTokenFromHeader(request);
 
         if (accessToken != null) {
             String tokenStatus = jwtProvider.validateToken(accessToken);
@@ -52,7 +43,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 String refreshToken = (String) session.getAttribute("refreshToken");
 
                 if (refreshToken != null) {
-                    // Account 조회 및 refreshAccessToken 호출
                     Long userId = jwtProvider.getUserId(refreshToken);
                     User user = userService.findUserById(userId);
                     Authentication authentication = jwtProvider.refreshAccessToken(refreshToken, response, user);
@@ -70,4 +60,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
+    /**
+     * 헤더에서 AccessToken 추출
+     * @param request HttpServletRequest
+     * @return AccessToken (없으면 null)
+     */
+    private String extractAccessTokenFromHeader(HttpServletRequest request) {
+        String bearerToken = request.getHeader("Authorization");
+        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7); // "Bearer " 이후의 토큰 값만 추출
+        }
+        return null;
+    }
 }

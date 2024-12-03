@@ -55,12 +55,11 @@ public class UserService {
 
         // AccessToken 발급 및 응답 헤더에 추가
         String accessToken = jwtProvider.generateAccessToken(user);
-        jwtProvider.setAccessTokenInCookie(user, accessToken, response);
 
         // RefreshToken 발급 및 세션에 저장
         jwtProvider.storeRefreshTokenInSession(user, session);
 
-        return "로그인 성공";
+        return "accessToken: " + accessToken;
 
     }
 
