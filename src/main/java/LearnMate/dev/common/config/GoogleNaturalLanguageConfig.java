@@ -2,6 +2,7 @@ package LearnMate.dev.common.config;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.language.v1.LanguageServiceSettings;
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -16,6 +17,12 @@ import java.io.IOException;
 public class GoogleNaturalLanguageConfig {
     @Value("${GCP_CREDENTIALS_LOCATION}")
     private String gcpCredentials;
+
+    @PostConstruct
+    public void checkGcpCredentials() {
+        log.info("Environment variable GCP_CREDENTIALS_LOCATION: {}", System.getenv("GCP_CREDENTIALS_LOCATION"));
+        log.info("Configured GCP_CREDENTIALS_LOCATION: {}", gcpCredentials);
+    }
 
     @Bean
     public LanguageServiceSettings languageServiceSettings() {
