@@ -86,7 +86,7 @@ public class DiaryService {
         EmotionSpectrum emotionSpectrum = validEmotion(request.getScore(), request.getEmotion());
 
         // 칭찬 카드 생성 및 조회
-        ComplimentCard complimentCard = complimentCardService.createComplimentCard(request.getContent());
+        ComplimentCard complimentCard = complimentCardService.createComplimentCard(request.getContent(), user);
 
         // 객체 생성 및 연관관계 설정
         Diary diary = createDiary(user, request, emotionSpectrum, complimentCard);

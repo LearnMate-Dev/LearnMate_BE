@@ -5,10 +5,7 @@ import LearnMate.dev.model.dto.response.ComplimentCardListResponse;
 import LearnMate.dev.model.dto.response.ComplimentCardResponse;
 import LearnMate.dev.service.ComplimentCardService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -24,8 +21,8 @@ public class ComplimentCardController {
         return ApiResponse.onSuccessData("칭찬카드 리스트 조회", complimentCardService.getComplimentCards());
     }
 
-    @GetMapping("detail")
-    public ApiResponse<ComplimentCardResponse> getComplimentCardDetail(@RequestParam("complimentId") Long complimentId) {
+    @GetMapping("/{complimentId}/detail")
+    public ApiResponse<ComplimentCardResponse> getComplimentCardDetail(@PathVariable("complimentId") Long complimentId) {
 
         return ApiResponse.onSuccessData("칭찬카드 상세 조회", complimentCardService.getComplimentCardDetail(complimentId));
 

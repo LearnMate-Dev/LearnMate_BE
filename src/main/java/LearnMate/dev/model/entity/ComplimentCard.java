@@ -22,4 +22,8 @@ public class ComplimentCard extends BaseTimeEntity {
     @Column(name = "keyword", nullable = false)
     private ComplimentKeyword keyword;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
 }
