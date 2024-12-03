@@ -13,8 +13,7 @@ import java.util.concurrent.CompletableFuture;
 public class OpenAIService {
     private final String ACTION_TIP_PROMPT = ResourceLoader.getResourceContent("action-tip-prompt.txt");
     private final String TODO_GUIDE_PROMPT = ResourceLoader.getResourceContent("todo-guide-prompt.txt");
-    private final String COMPLIMENT_CARD_TITLE_PROMPT = ResourceLoader.getResourceContent("compliment-card-title-prompt.txt");
-    private final String COMPLIMENT_CARD_CONTENT_PROMPT = ResourceLoader.getResourceContent("compliment-card-content-prompt.txt");
+    private final String COMPLIMENT_CARD_KEYWORD_PROMPT = ResourceLoader.getResourceContent("compliment-card-keyword-prompt.txt");
 
     private final OpenAiChatModel chatModel;
 
@@ -33,15 +32,9 @@ public class OpenAIService {
 
     }
 
-    public String getComplimentCardTitle(String content) {
+    public String getComplimentCard(String content) {
 
-        return chatModel.call(COMPLIMENT_CARD_TITLE_PROMPT + content);
-
-    }
-
-    public String getComplimentCardContent(String content) {
-
-        return chatModel.call(COMPLIMENT_CARD_CONTENT_PROMPT + content);
+        return chatModel.call(COMPLIMENT_CARD_KEYWORD_PROMPT + content);
 
     }
 

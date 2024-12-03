@@ -3,21 +3,20 @@ package LearnMate.dev.model.converter;
 import LearnMate.dev.model.dto.response.DiaryAnalysisResponse;
 import LearnMate.dev.model.dto.response.DiaryCalendarResponse;
 import LearnMate.dev.model.dto.response.DiaryDetailResponse;
-import LearnMate.dev.model.entity.ActionTip;
-import LearnMate.dev.model.entity.Diary;
-import LearnMate.dev.model.entity.Emotion;
-import LearnMate.dev.model.entity.User;
+import LearnMate.dev.model.entity.*;
 
 import java.util.List;
 
 public class DiaryConverter {
 
-    public static Diary toDiary(String content, User user, Emotion emotion, ActionTip actionTip) {
+    public static Diary toDiary(String content, User user, Emotion emotion,
+                                ActionTip actionTip, ComplimentCard complimentCard) {
         return Diary.builder()
                 .content(content)
                 .user(user)
                 .emotion(emotion)
                 .actionTip(actionTip)
+                .complimentCard(complimentCard)
                 .build();
     }
 

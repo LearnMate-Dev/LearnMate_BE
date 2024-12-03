@@ -53,6 +53,7 @@ public enum ErrorStatus implements BaseErrorCode {
 
     // ComplimentCard
     _COMPLIMENT_CARD_NOT_FOUND(HttpStatus.NOT_FOUND, "COMPLIMENT404", "해당 칭찬카드를 찾을 수 없습니다."),
+    _INVALID_COMPLIMENT_KEYWORD(HttpStatus.INTERNAL_SERVER_ERROR, "COMPLIMENT500", "칭찬 키워드 분석 중 오류가 발생했습니다.")
     ;
 
 

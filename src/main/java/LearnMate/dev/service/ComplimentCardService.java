@@ -4,8 +4,8 @@ import LearnMate.dev.common.ErrorStatus;
 import LearnMate.dev.common.exception.ApiException;
 import LearnMate.dev.model.converter.ComplimentCardConverter;
 import LearnMate.dev.model.dto.response.ComplimentCardListResponse;
-import LearnMate.dev.model.dto.response.ComplimentCardResponse;
 import LearnMate.dev.model.entity.ComplimentCard;
+import LearnMate.dev.model.enums.ComplimentKeyword;
 import LearnMate.dev.repository.ComplimentCardRepository;
 import LearnMate.dev.security.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +22,38 @@ import java.util.List;
 public class ComplimentCardService {
 
     private final ComplimentCardRepository complimentCardRepository;
+    private final OpenAIService openAIService;
+
+
+    // 칭찬카드 생성 및 조회
+    @Transactional
+    public ComplimentCard createComplimentCard(String content) {
+
+        // 칭찬 keyword 파싱
+        String keywordValue = openAIService.getComplimentCard(content);
+        ComplimentKeyword keyword = getComplimentKeyword(keywordValue);
+
+        // compliment card entity 조회 및 생성
+        ComplimentCard complimentCard = findComplimentCardByKeyword(keyword);
+        complimentCardRepository.save(complimentCard);
+
+        return complimentCard;
+    }
+
+    private ComplimentCard findComplimentCardByKeyword(ComplimentKeyword keyword) {
+        return complimentCardRepository.findByKeyword(keyword)
+                .orElse(ComplimentCardConverter.toComplimentCard(keyword));
+    }
+
+    private ComplimentKeyword getComplimentKeyword(String keywordValue) {
+        ComplimentKeyword keyword = ComplimentKeyword.getKeyword(keywordValue);
+
+        if (keyword == null) {
+            throw new ApiException(ErrorStatus._INVALID_COMPLIMENT_KEYWORD);
+        }
+
+        return keyword;
+    }
 
     // 칭찬카드 리스트 조회
     public List<ComplimentCardListResponse> getComplimentCards() {
@@ -34,10 +66,8 @@ public class ComplimentCardService {
 
     }
 
-    // 칭찬카드 상세 조회
-    public ComplimentCardResponse getComplimentCardDetail(Long complimentId) {
-        return ComplimentCardConverter.toComplimentCardResponse(findComplimentCardById(complimentId));
-    }
+    // 칭찬카드 관련 일기 리스트 조회
+
 
     private Long getUserIdFromAuthentication() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

@@ -11,7 +11,8 @@ public enum ComplimentKeyword {
     TRUTH("성실", "성실 Content"), RESPONSIBILITY("책임감", "책임감 Content"),
     CREATIVITY("창의력", "창의력 Content"), DELICATE("섬세함", "섬세함 Content"),
     COURAGE("용기", "용기 Content"), KINDNESS("친절함", "친절함 Content"),
-    CONSIDERATION("배려심", "배려심 Content"), AFFIRMATION("긍정", "긍정 Content")
+    CONSIDERATION("배려심", "배려심 Content"), AFFIRMATION("긍정", "긍정 Content"),
+    NO_KEYWORD("NO_KEYWORD", "X")
     ;
 
     private final String value;
