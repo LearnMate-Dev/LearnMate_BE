@@ -1,6 +1,8 @@
 package LearnMate.dev.repository;
 
 import LearnMate.dev.model.dto.response.DiaryCalendarResponse;
+import LearnMate.dev.model.dto.response.DiarySimpleResponse;
+import LearnMate.dev.model.entity.ComplimentCard;
 import LearnMate.dev.model.entity.Diary;
 import LearnMate.dev.model.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -42,4 +44,14 @@ public interface DiaryRepository extends JpaRepository<Diary, Long> {
     List<DiaryCalendarResponse.DiaryDto> findDiaryCreatedAtMonth(
             @Param(value = "date") LocalDate date,
             @Param(value = "userId") Long userId);
+
+
+    @Query("SELECT new LearnMate.dev.model.dto.response.DiarySimpleResponse(d.id, d.createdAt, e.emotion, d.content) " +
+            "FROM Diary d " +
+            "JOIN d.emotion e " +
+            "WHERE d.complimentCard = :complimentCard " +
+            "ORDER BY d.createdAt desc")
+    List<DiarySimpleResponse> findDiaryByComplimentCard(
+        @Param(value = "complimentCard") ComplimentCard complimentCard
+    );
 }

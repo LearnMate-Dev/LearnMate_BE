@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ComplimentCardResponse {
 
-    private String complimentTitle;
+    private Long complimentId;
+    private String complimentKeyword;
     private String complimentContent;
-    private Long diaryId;
 
 }

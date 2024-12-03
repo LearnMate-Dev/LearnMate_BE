@@ -35,10 +35,11 @@ public class DiaryService {
 
     private final UserRepository userRepository;
     private final DiaryRepository diaryRepository;
-    private final ComplimentCardRepository complimentCardRepository;
 
     private final NaturalLanguageService naturalLanguageService;
     private final OpenAIService openAIService;
+    private final ComplimentCardService complimentCardService;
+
 
     /*
      * 유저의 일기 내용을 기반으로 감정을 분석하고 행동 요령을 제안함
@@ -49,7 +50,7 @@ public class DiaryService {
     public DiaryAnalysisResponse analyzeDiary(DiaryAnalysisRequest request) {
         Long userId = getUserIdFromAuthentication();
         User user = findUserById(userId);
-        validIsUserPostDiary(user);
+//        validIsUserPostDiary(user);
 
         // content 길이 검사
         String content = request.getContent();
@@ -76,7 +77,7 @@ public class DiaryService {
 
         Long userId = getUserIdFromAuthentication();
         User user = findUserById(userId);
-        validIsUserPostDiary(user);
+//        validIsUserPostDiary(user);
 
         // content 길이 검사
         validContentLength(request.getContent());
@@ -84,22 +85,22 @@ public class DiaryService {
         // emotion 정보 검사
         EmotionSpectrum emotionSpectrum = validEmotion(request.getScore(), request.getEmotion());
 
-        // 객체 생성 및 연관관계 설정
-        Diary diary = createDiary(user, request, emotionSpectrum);
-        diaryRepository.save(diary);
+        // 칭찬 카드 생성 및 조회
+        ComplimentCard complimentCard = complimentCardService.createComplimentCard(request.getContent(), user);
 
-        ComplimentCard complimentCard = createComplimentCard(user, request.getContent(), diary.getId());
-        complimentCardRepository.save(complimentCard);
+        // 객체 생성 및 연관관계 설정
+        Diary diary = createDiary(user, request, emotionSpectrum, complimentCard);
+        diaryRepository.save(diary);
 
         return DiaryConverter.toDiaryDetailResponse(diary);
 
     }
 
     @Transactional
-    public Diary createDiary(User user, DiaryPostRequest request, EmotionSpectrum emotionSpectrum) {
+    public Diary createDiary(User user, DiaryPostRequest request, EmotionSpectrum emotionSpectrum, ComplimentCard complimentCard) {
         Emotion emotion = EmotionConverter.toEmotion(request.getScore(), emotionSpectrum);
         ActionTip actionTip = ActionTipConverter.toActionTip(request.getActionTip());
-        Diary diary = DiaryConverter.toDiary(request.getContent(), user, emotion, actionTip);
+        Diary diary = DiaryConverter.toDiary(request.getContent(), user, emotion, actionTip, complimentCard);
 
         emotion.updateDiary(diary);
         actionTip.updateDiary(diary);
@@ -179,14 +180,6 @@ public class DiaryService {
         List<DiaryCalendarResponse.DiaryDto> diaryDtoList = diaryRepository.findDiaryCreatedAtMonth(date, userId);
 
         return DiaryConverter.toDiaryCalendarResponse(diaryDtoList);
-    }
-
-    private ComplimentCard createComplimentCard(User user, String content, Long diaryId) {
-
-        String complimentContent = openAIService.getComplimentCardContent(content);
-        String complimentTitle = openAIService.getComplimentCardTitle(complimentContent);
-
-        return ComplimentCardConverter.toComplimentCard(user, complimentTitle, complimentContent, diaryId);
     }
 
     private void validIsUserPostDiary(User user) {
