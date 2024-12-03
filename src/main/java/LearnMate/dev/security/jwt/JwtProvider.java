@@ -7,13 +7,11 @@ import LearnMate.dev.security.security.CustomUserDetails;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -29,7 +27,6 @@ public class JwtProvider {
     private final Long ACCESS_TOKEN_EXPIRE_TIME;
     private final Long REFRESH_TOKEN_EXPIRE_TIME;
 
-
     public JwtProvider(@Value("${jwt.secret_key}") String secretKey,
                        @Value("${jwt.access_token_expire}") Long accessTokenExpire,
                        @Value("${jwt.refresh_token_expire}") Long refreshTokenExpire) {
@@ -39,6 +36,7 @@ public class JwtProvider {
         this.REFRESH_TOKEN_EXPIRE_TIME = refreshTokenExpire;
     }
 
+    // AccessToken 생성
     public String generateAccessToken(User user) {
         Date expiredAt = new Date(System.currentTimeMillis() + ACCESS_TOKEN_EXPIRE_TIME);
         return Jwts.builder()
@@ -49,6 +47,7 @@ public class JwtProvider {
                 .compact();
     }
 
+    // RefreshToken 생성
     public String generateRefreshToken(User user) {
         Date expiredAt = new Date(System.currentTimeMillis() + REFRESH_TOKEN_EXPIRE_TIME);
         return Jwts.builder()
@@ -59,25 +58,12 @@ public class JwtProvider {
                 .compact();
     }
 
-    public Long getUserId(String token) {
-        Claims claims = getClaimsFromToken(token);
-        return claims.get("user_id", Long.class);
-    }
-
-    public void setAccessTokenInCookie(User user, String accessToken, HttpServletResponse response) {
-        // accessToken을 쿠키에 설정
-        Cookie accessTokenCookie = new Cookie("accessToken", accessToken);
-        accessTokenCookie.setHttpOnly(true);   // 클라이언트 측 접근 방지
-        accessTokenCookie.setSecure(false);     // HTTPS에서만 전송
-        accessTokenCookie.setPath("/");        // 전체 경로에서 접근 가능
-        response.addCookie(accessTokenCookie); // 쿠키 설정 추가
-    }
-
     public void storeRefreshTokenInSession(User user, HttpSession session) {
         String refreshToken = generateRefreshToken(user);
         session.setAttribute("refreshToken", refreshToken);
     }
 
+    // Token 검증
     public String validateToken(String token) {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
@@ -89,6 +75,7 @@ public class JwtProvider {
         }
     }
 
+    // Token에서 Claims 추출
     public Claims getClaimsFromToken(String token) {
         try {
             return Jwts.parserBuilder()
@@ -101,6 +88,25 @@ public class JwtProvider {
         }
     }
 
+    // Token에서 User ID 추출
+    public Long getUserId(String token) {
+        Claims claims = getClaimsFromToken(token);
+        return claims.get("user_id", Long.class);
+    }
+
+    // AccessToken 갱신
+    public Authentication refreshAccessToken(String refreshToken, HttpServletResponse response, User user) {
+        if ("VALID".equals(validateToken(refreshToken))) {
+            // 새 AccessToken 생성
+            String newAccessToken = generateAccessToken(user);
+
+            // 새 인증 객체 생성 및 반환
+            return getAuthenticationFromToken(newAccessToken);
+        }
+        return null;
+    }
+
+    // Token에서 Authentication 객체 생성
     public Authentication getAuthenticationFromToken(String token) {
         Claims claims = getClaimsFromToken(token);
         Long userId = claims.get("user_id", Long.class);
@@ -109,20 +115,4 @@ public class JwtProvider {
         CustomUserDetails userDetails = new CustomUserDetails(userId, email, new ArrayList<>());
         return new UsernamePasswordAuthenticationToken(userDetails, token, userDetails.getAuthorities());
     }
-
-
-    public Authentication refreshAccessToken(String refreshToken, HttpServletResponse response, User user) {
-
-        if ("VALID".equals(validateToken(refreshToken))) {
-
-            // 새 accessToken 생성
-            String newAccessToken = generateAccessToken(user);
-            setAccessTokenInCookie(user, newAccessToken, response);
-
-            // 인증 객체 생성 및 반환
-            return getAuthenticationFromToken(newAccessToken);
-        }
-        return null;
-    }
-
 }
