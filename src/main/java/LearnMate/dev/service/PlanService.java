@@ -5,6 +5,7 @@ import LearnMate.dev.common.exception.ApiException;
 import LearnMate.dev.model.converter.PlanConverter;
 import LearnMate.dev.model.dto.request.PlanPostRequest;
 import LearnMate.dev.model.dto.request.PlanPatchRequest;
+import LearnMate.dev.model.dto.request.PlanSaveRequest;
 import LearnMate.dev.model.dto.response.PlanDetailResponse;
 import LearnMate.dev.model.entity.Plan;
 import LearnMate.dev.model.entity.User;
@@ -29,47 +30,45 @@ public class PlanService {
 
     // 최신 가이드 조회
     public String getTodos() {
-
         Long userId = getUserIdFromAuthentication();
 
         Plan plan = findRecentPlanByUserId(userId);
 
         return plan.getGuide();
-
     }
 
     // Todo 생성
-    @Transactional
     public String postTodo(PlanPostRequest request) {
+        validContentLength(request.getContent());
 
+        return getTodoGuide(request.getContent());
+    }
+
+    @Transactional
+    public String saveTodo(PlanSaveRequest request) {
         validContentLength(request.getContent());
 
         Long userId = getUserIdFromAuthentication();
 
         User user = findUserById(userId);
 
-        String guide = getTodoGuide(request.getContent());
+        planRepository.save(PlanConverter.toPlan(request.getContent(), user, request.getGuide()));
 
-        planRepository.save(PlanConverter.toPlan(request.getContent(), user, guide));
-
-        return guide;
+        return "가이드 저장 완료";
     }
 
     // Todo 상세 조회
     public PlanDetailResponse getTodoDetail(Long todoId) {
-
         Long userId = getUserIdFromAuthentication();
 
         Plan plan = findRecentPlanByUserId(userId);
 
         return PlanConverter.toPlanDetailResponse(plan.getContent(), plan.getGuide());
-
     }
 
     // Todo 수정
     @Transactional
     public String patchTodo(Long todoId, PlanPatchRequest request) {
-
         validContentLength(request.getContent());
 
         Long userId = getUserIdFromAuthentication();
@@ -90,7 +89,6 @@ public class PlanService {
     // Todo 삭제
     @Transactional
     public String deleteTodo(Long todoId) {
-
         Long userId = getUserIdFromAuthentication();
 
         Plan plan = findPlanByTodoId(todoId);
@@ -102,7 +100,6 @@ public class PlanService {
         planRepository.delete(plan);
 
         return "Todo 삭제";
-
     }
 
     private Long getUserIdFromAuthentication() {
@@ -136,5 +133,4 @@ public class PlanService {
     private String getTodoGuide(String content) {
         return openAIService.getTodoGuide(content);
     }
-
 }

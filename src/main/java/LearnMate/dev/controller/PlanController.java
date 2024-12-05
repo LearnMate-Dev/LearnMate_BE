@@ -3,6 +3,7 @@ package LearnMate.dev.controller;
 import LearnMate.dev.common.ApiResponse;
 import LearnMate.dev.model.dto.request.PlanPostRequest;
 import LearnMate.dev.model.dto.request.PlanPatchRequest;
+import LearnMate.dev.model.dto.request.PlanSaveRequest;
 import LearnMate.dev.model.dto.response.PlanDetailResponse;
 import LearnMate.dev.service.PlanService;
 import jakarta.validation.Valid;
@@ -21,9 +22,14 @@ public class PlanController {
         return ApiResponse.onSuccess(planService.getTodos());
     }
 
-    @PostMapping()
+    @GetMapping("/guide")
     public ApiResponse<String> createTodo(@RequestBody @Valid PlanPostRequest request) {
-        return ApiResponse.onSuccessData("Todo Guide 생성", planService.postTodo(request));
+        return ApiResponse.onSuccessData("Todo Guide 추천", planService.postTodo(request));
+    }
+
+    @PostMapping("/guide")
+    public ApiResponse<String> saveTodoGuide(@RequestBody @Valid PlanSaveRequest request) {
+        return ApiResponse.onSuccess(planService.saveTodo(request));
     }
 
     @GetMapping("/{todoId}")

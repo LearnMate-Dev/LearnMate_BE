@@ -7,12 +7,18 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class PlanPostRequest {
+public class PlanSaveRequest {
+
     @NotBlank(message = "계획 내용은 필수입니다.")
     private String content;
 
+    @NotBlank(message = "Todo Guide는 필수입니다.")
+    private String guide;
+
     @Builder
-    public PlanPostRequest(String content) {
+    public PlanSaveRequest(String content,
+                           String guide) {
         this.content = content;
+        this.guide = guide;
     }
 }
