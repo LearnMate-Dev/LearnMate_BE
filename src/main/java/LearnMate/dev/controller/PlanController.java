@@ -22,12 +22,12 @@ public class PlanController {
         return ApiResponse.onSuccess(planService.getTodos());
     }
 
-    @GetMapping("/guide")
+    @PostMapping("/guide")
     public ApiResponse<String> createTodo(@RequestBody @Valid PlanPostRequest request) {
-        return ApiResponse.onSuccessData("Todo Guide 추천", planService.postTodo(request));
+        return ApiResponse.onSuccess(planService.postTodo(request));
     }
 
-    @PostMapping("/guide")
+    @PostMapping("/guide/save")
     public ApiResponse<String> saveTodoGuide(@RequestBody @Valid PlanSaveRequest request) {
         return ApiResponse.onSuccess(planService.saveTodo(request));
     }
