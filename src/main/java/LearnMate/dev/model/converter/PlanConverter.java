@@ -6,7 +6,6 @@ import LearnMate.dev.model.entity.Plan;
 import LearnMate.dev.model.entity.User;
 
 public class PlanConverter {
-
     public static Plan toPlan(String content, User user, String guide) {
         return Plan.builder()
                 .content(content)
@@ -21,5 +20,4 @@ public class PlanConverter {
                 .guide(guide)
                 .build();
     }
-
 }

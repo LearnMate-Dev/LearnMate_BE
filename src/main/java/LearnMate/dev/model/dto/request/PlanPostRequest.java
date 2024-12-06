@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class PlanPostRequest {
-
     @NotBlank(message = "계획 내용은 필수입니다.")
     private String content;
 
@@ -16,5 +15,4 @@ public class PlanPostRequest {
     public PlanPostRequest(String content) {
         this.content = content;
     }
-
 }
