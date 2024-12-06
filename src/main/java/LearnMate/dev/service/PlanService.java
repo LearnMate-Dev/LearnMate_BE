@@ -7,6 +7,8 @@ import LearnMate.dev.model.dto.request.PlanPostRequest;
 import LearnMate.dev.model.dto.request.PlanPatchRequest;
 import LearnMate.dev.model.dto.request.PlanSaveRequest;
 import LearnMate.dev.model.dto.response.PlanDetailResponse;
+import LearnMate.dev.model.dto.response.PlanListResponse;
+import LearnMate.dev.model.dto.response.PlanRecentResponse;
 import LearnMate.dev.model.entity.Plan;
 import LearnMate.dev.model.entity.User;
 import LearnMate.dev.repository.PlanRepository;
@@ -18,6 +20,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -28,20 +34,29 @@ public class PlanService {
     private final UserRepository userRepository;
     private final PlanRepository planRepository;
 
+    // todo 리스트 조회
+    public List<PlanListResponse> getTodos() {
+        Long userId = getUserIdFromAuthentication();
+
+        List<Plan> plans = planRepository.findAllByUserIdOrderByCreatedAtDesc(userId);
+
+        return PlanConverter.toPlanListResponse(plans);
+    }
+
     // 최신 가이드 조회
-    public String getTodos() {
+    public List<String> getRecentTodoGuide() {
         Long userId = getUserIdFromAuthentication();
 
         Plan plan = findRecentPlanByUserId(userId);
 
-        return plan.getGuide();
+        return convertGuideToGuides(plan.getGuide());
     }
 
     // Todo 생성
-    public String postTodo(PlanPostRequest request) {
+    public List<String> postTodo(PlanPostRequest request) {
         validContentLength(request.getContent());
 
-        return getTodoGuide(request.getContent());
+        return convertGuideToGuides(getTodoGuide(request.getContent()));
     }
 
     // Todo Guide 저장
@@ -53,18 +68,25 @@ public class PlanService {
 
         User user = findUserById(userId);
 
-        planRepository.save(PlanConverter.toPlan(request.getContent(), user, request.getGuide()));
+        planRepository.save(PlanConverter.toPlan(request.getContent(), user, convertGuidesToGuide(request.getGuides())));
 
         return "가이드 저장 완료";
     }
 
-    // Todo 상세 조회
-    public PlanDetailResponse getTodoDetail(Long todoId) {
+    // Todo 최신 조회
+    public PlanRecentResponse getRecentTodoDetail() {
         Long userId = getUserIdFromAuthentication();
 
         Plan plan = findRecentPlanByUserId(userId);
 
-        return PlanConverter.toPlanDetailResponse(plan.getContent(), plan.getGuide());
+        return PlanConverter.toPlanRecentResponse(plan.getContent(), convertGuideToGuides(plan.getGuide()));
+    }
+
+    // Todo 상세 조회
+    public PlanDetailResponse getTodoDetail(Long todoId) {
+        Plan plan = findPlanByTodoId(todoId);
+
+        return PlanConverter.toPlanDetailResponse(plan.getContent(), convertGuideToGuides(plan.getGuide()));
     }
 
     // Todo 수정
@@ -133,5 +155,15 @@ public class PlanService {
 
     private String getTodoGuide(String content) {
         return openAIService.getTodoGuide(content);
+    }
+
+    private List<String> convertGuideToGuides(String guide) {
+        return Arrays.stream(guide.split("\n"))
+                .map(String::trim)
+                .collect(Collectors.toList());
+    }
+
+    private String convertGuidesToGuide(List<String> guides) {
+        return String.join("\n", guides);
     }
 }

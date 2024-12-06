@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Getter
 @NoArgsConstructor
 public class PlanSaveRequest {
@@ -13,12 +15,12 @@ public class PlanSaveRequest {
     private String content;
 
     @NotNull(message = "Todo Guide는 필수입니다.")
-    private String guide;
+    private List<String> guides;
 
     @Builder
     public PlanSaveRequest(String content,
-                           String guide) {
+                           List<String> guides) {
         this.content = content;
-        this.guide = guide;
+        this.guides = guides;
     }
 }

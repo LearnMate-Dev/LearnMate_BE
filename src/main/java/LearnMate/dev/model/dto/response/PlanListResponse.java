@@ -4,18 +4,18 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Getter
 @NoArgsConstructor
-public class PlanDetailResponse {
+public class PlanListResponse {
 
+    private Long todoId;
     private String content;
-    private List<String> guides;
+    private String createdAt;
 
     @Builder
-    public PlanDetailResponse(String content, List<String> guides) {
+    public PlanListResponse (Long todoId, String content, String createdAt) {
+        this.todoId = todoId;
         this.content = content;
-        this.guides = guides;
+        this.createdAt = createdAt;
     }
 }
