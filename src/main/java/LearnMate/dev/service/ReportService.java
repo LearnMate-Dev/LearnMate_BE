@@ -95,7 +95,6 @@ public class ReportService {
                 .limit(3) // 상위 3개만 추출
                 .map(dto -> new ReportResponse.EmotionRankDto( // dto 변환
                         dto.getEmotion(),
-                        dto.getEmoticon(),
                         rankCounter.getAndIncrement() // 랭크 할당
                 ))
                 .toList();

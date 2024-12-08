@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class HomeResponse {
 
     private Long diaryId;
-    private String emoticon;
+    private String emotion;
     private Long todoId;
     private String todoGuide;
 

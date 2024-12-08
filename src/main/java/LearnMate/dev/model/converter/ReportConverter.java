@@ -9,7 +9,6 @@ public class ReportConverter {
     public static ReportResponse.ReportEmotionDto toReportEmotionDto(ReportResponse.EmotionDto emotionDto) {
         return ReportResponse.ReportEmotionDto.builder()
                 .emotion(emotionDto.getEmotionSpectrum().getValue())
-                .emoticon(emotionDto.getEmotionSpectrum().getEmoticon())
                 .count(emotionDto.getCount())
                 .build();
     }
