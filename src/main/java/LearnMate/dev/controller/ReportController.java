@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/report")
 public class ReportController {
     private final ReportService reportService;
+
     @GetMapping()
     public ApiResponse<ReportResponse.ReportDto> getEmotionReport() {
         return ApiResponse.onSuccessData("감정 분석 레포트 조회 성공", reportService.getEmotionReport());

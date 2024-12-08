@@ -16,11 +16,11 @@ public class Emotion extends BaseTimeEntity {
     @Column(name = "emotion_id")
     private Long id;
 
-    @Column(length = 500, nullable = false)
+    @Column(name = "emotion_score", length = 500, nullable = false)
     private Double score; // 감정 점수
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(name = "emotion_emotion", nullable = false)
     private EmotionSpectrum emotion; // 감정 지표
 
     @OneToOne(fetch = FetchType.LAZY)

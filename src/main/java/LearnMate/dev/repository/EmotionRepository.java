@@ -6,10 +6,12 @@ import LearnMate.dev.model.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
 
+@Repository
 public interface EmotionRepository extends JpaRepository<Emotion, Long> {
 
     @Query("SELECT new LearnMate.dev.model.dto.response.ReportResponse$EmotionDto(e.emotion, COUNT(e)) " +

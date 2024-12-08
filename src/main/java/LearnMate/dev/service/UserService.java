@@ -62,7 +62,6 @@ public class UserService {
         jwtProvider.storeRefreshTokenInSession(user, session);
 
         return TokenConverter.toToken(accessToken);
-
     }
 
     private void validPassword(String password, String originPassword) {

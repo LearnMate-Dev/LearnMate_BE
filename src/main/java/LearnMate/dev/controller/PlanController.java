@@ -32,12 +32,16 @@ public class PlanController {
     }
 
     @PostMapping("/guide")
-    public ApiResponse<List<String>> createTodo(@RequestBody @Valid PlanPostRequest request) {
+    public ApiResponse<List<String>> createTodo(
+            @RequestBody @Valid PlanPostRequest request
+    ) {
         return ApiResponse.onSuccessData("Todo 가이드 추천", planService.postTodo(request));
     }
 
     @PostMapping("/guide/save")
-    public ApiResponse<String> saveTodoGuide(@RequestBody @Valid PlanSaveRequest request) {
+    public ApiResponse<String> saveTodoGuide(
+            @RequestBody @Valid PlanSaveRequest request
+    ) {
         return ApiResponse.onSuccess(planService.saveTodo(request));
     }
 
@@ -47,19 +51,24 @@ public class PlanController {
     }
 
     @GetMapping("/{todoId}")
-    public ApiResponse<PlanDetailResponse> getTodoDetail(@PathVariable("todoId") Long todoId) {
+    public ApiResponse<PlanDetailResponse> getTodoDetail(
+            @PathVariable("todoId") Long todoId
+    ) {
         return ApiResponse.onSuccessData("Todo 상세 조회", planService.getTodoDetail(todoId));
     }
 
     @PatchMapping("/{todoId}")
-    public ApiResponse<String> patchTodo(@PathVariable("todoId") Long todoId,
-                                          @RequestBody @Valid PlanPatchRequest request) {
+    public ApiResponse<String> patchTodo(
+            @PathVariable("todoId") Long todoId,
+            @RequestBody @Valid PlanPatchRequest request
+    ) {
         return ApiResponse.onSuccessData("Todo Guide 재생성", planService.patchTodo(todoId, request));
     }
 
     @DeleteMapping("/{todoId}")
-    public ApiResponse<String> deleteTodo(@PathVariable("todoId") Long todoId) {
+    public ApiResponse<String> deleteTodo(
+            @PathVariable("todoId") Long todoId
+    ) {
         return ApiResponse.onSuccess(planService.deleteTodo(todoId));
     }
-
 }
