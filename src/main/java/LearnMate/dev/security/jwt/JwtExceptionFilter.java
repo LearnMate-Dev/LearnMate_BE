@@ -31,7 +31,5 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
                 throw new RuntimeException(ex);
             }
         }
-
     }
-
 }

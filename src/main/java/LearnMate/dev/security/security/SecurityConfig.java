@@ -47,15 +47,12 @@ public class SecurityConfig {
             "/swagger-resources/**",
             "/swagger-ui/**",
             "/favicon.ico"
-
     };
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-
         return web -> web.ignoring()
                 .requestMatchers(WHITE_LIST_URL);
-
     }
 
     @Bean
@@ -78,5 +75,4 @@ public class SecurityConfig {
 
         return http.build();
     }
-
 }

@@ -95,7 +95,7 @@ public class JwtProvider {
     }
 
     // AccessToken 갱신
-    public Authentication refreshAccessToken(String refreshToken, HttpServletResponse response, User user) {
+    public Authentication refreshAccessToken(String refreshToken, User user) {
         if ("VALID".equals(validateToken(refreshToken))) {
             // 새 AccessToken 생성
             String newAccessToken = generateAccessToken(user);

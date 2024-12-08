@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -24,50 +25,76 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final UserService userService;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
+                                    FilterChain filterChain) throws ServletException, IOException {
         HttpSession session = request.getSession(false);
         String accessToken = extractAccessTokenFromHeader(request);
 
-        if (accessToken != null) {
-            String tokenStatus = jwtProvider.validateToken(accessToken);
+        if (accessToken == null)
+            return;
 
-            if ("VALID".equals(tokenStatus)) {
-                // accessToken이 유효한 경우, 인증 정보 설정
-                Authentication authentication = jwtProvider.getAuthenticationFromToken(accessToken);
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+        String tokenStatus = jwtProvider.validateToken(accessToken);
 
-            } else if ("EXPIRED".equals(tokenStatus) && session != null) {
+        switch (tokenStatus) {
+            case "VALID":
+                handleValidToken(accessToken);
+                break;
+
+            case "EXPIRED":
+                if (session == null) {
+                    clearAuthentication();
+                    break;
+                }
+
                 // accessToken이 만료된 경우, refreshToken으로 새로운 accessToken 발급
                 String refreshToken = (String) session.getAttribute("refreshToken");
-
-                if (refreshToken != null) {
-                    Long userId = jwtProvider.getUserId(refreshToken);
-                    User user = userService.findUserById(userId);
-                    Authentication authentication = jwtProvider.refreshAccessToken(refreshToken, response, user);
-
-                    if (authentication != null) {
-                        SecurityContextHolder.getContext().setAuthentication(authentication);
-                    } else {
-                        SecurityContextHolder.clearContext();
-                    }
+                if (refreshToken == null) {
+                    clearAuthentication();
+                    break;
                 }
-            } else if ("INVALID".equals(tokenStatus)) {
-                SecurityContextHolder.clearContext();
-            }
+
+                Authentication authentication = getRefreshAccessToken(refreshToken);
+                setAuthentication(authentication);
+                break;
+
+            case "INVALID":
+                clearAuthentication();
+                break;
         }
+
         filterChain.doFilter(request, response);
     }
 
-    /**
-     * 헤더에서 AccessToken 추출
-     * @param request HttpServletRequest
-     * @return AccessToken (없으면 null)
-     */
+    // 헤더에서 AccessToken 추출
     private String extractAccessTokenFromHeader(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
         if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring(7); // "Bearer " 이후의 토큰 값만 추출
         }
         return null;
+    }
+
+    // accessToken이 유효한 경우, 인증 정보 설정
+    private void handleValidToken(String accessToken) {
+        Authentication authentication = jwtProvider.getAuthenticationFromToken(accessToken);
+        setAuthentication(authentication);
+    }
+
+    private Authentication getRefreshAccessToken(String refreshToken) {
+        Long userId = jwtProvider.getUserId(refreshToken);
+        User user = userService.findUserById(userId);
+        return jwtProvider.refreshAccessToken(refreshToken, user);
+    }
+
+    private void setAuthentication(Authentication authentication) {
+        if (authentication != null) {
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+        } else {
+            clearAuthentication();
+        }
+    }
+
+    private void clearAuthentication() {
+        SecurityContextHolder.clearContext();
     }
 }
