@@ -1,6 +1,6 @@
 package LearnMate.dev.controller;
 
-import LearnMate.dev.common.ApiResponse;
+import LearnMate.dev.common.response.ApiResponse;
 import LearnMate.dev.model.dto.request.PlanPostRequest;
 import LearnMate.dev.model.dto.request.PlanPatchRequest;
 import LearnMate.dev.model.dto.request.PlanSaveRequest;

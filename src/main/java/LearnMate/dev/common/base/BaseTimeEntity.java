@@ -1,4 +1,4 @@
-package LearnMate.dev.common;
+package LearnMate.dev.common.base;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;

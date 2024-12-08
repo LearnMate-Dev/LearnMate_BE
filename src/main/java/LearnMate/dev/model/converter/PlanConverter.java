@@ -24,7 +24,7 @@ public class PlanConverter {
                 .map(plan -> PlanListResponse.builder()
                         .todoId(plan.getId())
                         .content(plan.getContent())
-                        .createdAt(plan.getCreatedAt().toString())
+                        .createdAt(plan.getCreatedAtFormatted())
                         .build())
                 .collect(Collectors.toList());
     }

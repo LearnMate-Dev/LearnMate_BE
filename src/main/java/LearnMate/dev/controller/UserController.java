@@ -1,6 +1,6 @@
 package LearnMate.dev.controller;
 
-import LearnMate.dev.common.ApiResponse;
+import LearnMate.dev.common.response.ApiResponse;
 import LearnMate.dev.model.dto.request.UserSignInRequest;
 import LearnMate.dev.model.dto.request.UserSignUpRequest;
 import LearnMate.dev.model.dto.response.HomeResponse;

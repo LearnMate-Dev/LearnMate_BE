@@ -1,6 +1,6 @@
 package LearnMate.dev.service;
 
-import LearnMate.dev.common.ErrorStatus;
+import LearnMate.dev.common.status.ErrorStatus;
 import LearnMate.dev.common.exception.ApiException;
 import LearnMate.dev.model.converter.ReportConverter;
 import LearnMate.dev.model.dto.response.ReportResponse;

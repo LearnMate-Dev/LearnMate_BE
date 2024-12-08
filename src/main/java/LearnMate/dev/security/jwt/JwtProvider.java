@@ -1,6 +1,6 @@
 package LearnMate.dev.security.jwt;
 
-import LearnMate.dev.common.ErrorStatus;
+import LearnMate.dev.common.status.ErrorStatus;
 import LearnMate.dev.common.exception.ApiException;
 import LearnMate.dev.model.entity.User;
 import LearnMate.dev.security.security.CustomUserDetails;

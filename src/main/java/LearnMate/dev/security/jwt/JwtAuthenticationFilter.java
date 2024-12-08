@@ -1,11 +1,9 @@
 package LearnMate.dev.security.jwt;
 
-import LearnMate.dev.common.ErrorStatus;
 import LearnMate.dev.model.entity.User;
 import LearnMate.dev.service.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;

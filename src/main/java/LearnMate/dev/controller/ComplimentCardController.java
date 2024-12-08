@@ -1,6 +1,6 @@
 package LearnMate.dev.controller;
 
-import LearnMate.dev.common.ApiResponse;
+import LearnMate.dev.common.response.ApiResponse;
 import LearnMate.dev.model.dto.response.ComplimentCardListResponse;
 import LearnMate.dev.model.dto.response.ComplimentCardResponse;
 import LearnMate.dev.model.dto.response.DiarySimpleResponse;

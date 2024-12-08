@@ -1,6 +1,6 @@
 package LearnMate.dev.model.entity;
 
-import LearnMate.dev.common.BaseTimeEntity;
+import LearnMate.dev.common.base.BaseTimeEntity;
 import LearnMate.dev.model.enums.ComplimentKeyword;
 import jakarta.persistence.*;
 import lombok.*;

@@ -1,7 +1,7 @@
 package LearnMate.dev.service;
 
 import LearnMate.dev.common.exception.ApiException;
-import LearnMate.dev.common.ErrorStatus;
+import LearnMate.dev.common.status.ErrorStatus;
 import com.google.cloud.language.v1.Document;
 import com.google.cloud.language.v1.LanguageServiceClient;
 import com.google.cloud.language.v1.Sentiment;

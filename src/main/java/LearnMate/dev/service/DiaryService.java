@@ -1,9 +1,8 @@
 package LearnMate.dev.service;
 
 import LearnMate.dev.common.exception.ApiException;
-import LearnMate.dev.common.ErrorStatus;
+import LearnMate.dev.common.status.ErrorStatus;
 import LearnMate.dev.model.converter.ActionTipConverter;
-import LearnMate.dev.model.converter.ComplimentCardConverter;
 import LearnMate.dev.model.converter.DiaryConverter;
 import LearnMate.dev.model.converter.EmotionConverter;
 import LearnMate.dev.model.dto.request.DiaryAnalysisRequest;
@@ -14,7 +13,6 @@ import LearnMate.dev.model.dto.response.DiaryCalendarResponse;
 import LearnMate.dev.model.dto.response.DiaryDetailResponse;
 import LearnMate.dev.model.entity.*;
 import LearnMate.dev.model.enums.EmotionSpectrum;
-import LearnMate.dev.repository.ComplimentCardRepository;
 import LearnMate.dev.repository.DiaryRepository;
 import LearnMate.dev.repository.UserRepository;
 import LearnMate.dev.security.security.CustomUserDetails;

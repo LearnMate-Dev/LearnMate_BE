@@ -1,5 +1,6 @@
-package LearnMate.dev.common;
+package LearnMate.dev.common.response;
 
+import LearnMate.dev.common.status.SuccessStatus;
 import LearnMate.dev.model.BaseCode;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -29,43 +30,28 @@ public class ApiResponse<T> {
         this.code = code;
         this.message = message;
         this.result = result;
-
     }
-
-    // 성공한 경우 응답 생성
-//    public static <T> ApiResponse<T> onSuccess(T result) {
-//
-//        return new ApiResponse<>(true, SuccessStatus._OK.getCode(), SuccessStatus._OK.getMessage(),
-//                result);
-//
-//    }
 
     public static <T> ApiResponse<T> of(BaseCode code, T result) {
 
         return new ApiResponse<>(true, code.getReasonHttpStatus().getCode(),
                 code.getReasonHttpStatus().getMessage(), result);
-
     }
 
     public static <T> ApiResponse<T> onSuccess(String message) {
 
-        return new ApiResponse<>(true, SuccessStatus._OK.getCode(),
-                message, null);
-
+        return new ApiResponse<>(true, SuccessStatus._OK.getCode(), message, null);
     }
 
     public static <T> ApiResponse<T> onSuccessData(String message, T result) {
 
-        return new ApiResponse<>(true, SuccessStatus._OK.getCode(),
-                message, result);
-
+        return new ApiResponse<>(true, SuccessStatus._OK.getCode(), message, result);
     }
 
     // 실패한 경우 응답 생성
     public static <T> ApiResponse<T> onFailure(String code, String message, T data) {
 
         return new ApiResponse<>(false, code, message, data);
-
     }
 
 }
