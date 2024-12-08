@@ -15,12 +15,12 @@ import java.io.IOException;
 @Slf4j
 @Configuration
 public class GoogleNaturalLanguageConfig {
-    @Value("${GCP_CREDENTIALS_LOCATION}")
+    @Value("${GOOGLE_APPLICATION_CREDENTIALS}")
     private String gcpCredentials;
 
     @PostConstruct
     public void checkGcpCredentials() {
-        log.info("Environment variable GCP_CREDENTIALS_LOCATION: {}", System.getenv("GCP_CREDENTIALS_LOCATION"));
+        log.info("Environment variable GCP_CREDENTIALS_LOCATION: {}", System.getenv("GOOGLE_APPLICATION_CREDENTIALS"));
         log.info("Configured GCP_CREDENTIALS_LOCATION: {}", gcpCredentials);
     }
 

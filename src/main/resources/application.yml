@@ -22,11 +22,11 @@ spring:
   cloud:
     gcp:
       credentials:
-        location: ${GCP_CREDENTIALS_LOCATION}  # GitHub Actions Secret을 통해 환경 변수로 관리
+        location: ${GOOGLE_APPLICATION_CREDENTIALS}
 
   ai:
     openai:
-        api-key: ${OPENAI_API_KEY}  # OpenAI API Key를 GitHub Actions Secret을 통해 환경 변수로 관리
+        api-key: ${OPENAI_API_KEY}
         model: ${OPENAI_MODEL}
 
 jwt:
