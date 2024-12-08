@@ -1,9 +1,8 @@
 package LearnMate.dev.model.converter;
 
-import LearnMate.dev.model.dto.response.DiaryAnalysisResponse;
-import LearnMate.dev.model.dto.response.DiaryCalendarResponse;
-import LearnMate.dev.model.dto.response.DiaryDetailResponse;
-import LearnMate.dev.model.dto.response.DiarySimpleResponse;
+import LearnMate.dev.model.dto.response.diary.DiaryAnalysisResponse;
+import LearnMate.dev.model.dto.response.diary.DiaryCalendarResponse;
+import LearnMate.dev.model.dto.response.diary.DiaryDetailResponse;
 import LearnMate.dev.model.entity.*;
 
 import java.util.List;
@@ -43,15 +42,4 @@ public class DiaryConverter {
                 .diaryCalendar(diaryDtoList)
                 .build();
     }
-
-    public static DiarySimpleResponse toDiarySimpleResponse(Diary diary) {
-        return DiarySimpleResponse.builder()
-                .diaryId(diary.getId())
-                .date(diary.getCreatedAtFormatted())
-                .emoticon(diary.getEmotion().getEmotion().getValue())
-                .content(diary.getContent().substring(0, 50)) // 50자만 반환
-                .build();
-    }
-
-
 }

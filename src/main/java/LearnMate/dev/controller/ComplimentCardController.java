@@ -1,9 +1,9 @@
 package LearnMate.dev.controller;
 
 import LearnMate.dev.common.response.ApiResponse;
-import LearnMate.dev.model.dto.response.ComplimentCardListResponse;
-import LearnMate.dev.model.dto.response.ComplimentCardResponse;
-import LearnMate.dev.model.dto.response.DiarySimpleResponse;
+import LearnMate.dev.model.dto.response.compliment.ComplimentCardListResponse;
+import LearnMate.dev.model.dto.response.compliment.ComplimentCardResponse;
+import LearnMate.dev.model.dto.response.diary.DiarySimpleResponse;
 import LearnMate.dev.service.ComplimentCardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;

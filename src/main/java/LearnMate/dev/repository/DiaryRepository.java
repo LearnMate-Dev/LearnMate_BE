@@ -1,10 +1,9 @@
 package LearnMate.dev.repository;
 
-import LearnMate.dev.model.dto.response.DiaryCalendarResponse;
-import LearnMate.dev.model.dto.response.DiarySimpleResponse;
+import LearnMate.dev.model.dto.response.diary.DiaryCalendarResponse;
+import LearnMate.dev.model.dto.response.diary.DiarySimpleResponse;
 import LearnMate.dev.model.entity.ComplimentCard;
 import LearnMate.dev.model.entity.Diary;
-import LearnMate.dev.model.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -18,11 +17,12 @@ public interface DiaryRepository extends JpaRepository<Diary, Long> {
 
     @Query("SELECT COUNT(d) > 0 " +
             "FROM Diary d " +
-            "WHERE d.user = :user " +
+            "WHERE d.user.id = :userId " +
             "AND DATE(d.createdAt) = :created_at")
     boolean existsDiaryByCreatedAt(
-            @Param(value = "user") User user,
+            @Param(value = "userId") Long userId,
             @Param(value = "created_at") LocalDate localDate);
+
 
     @Query("SELECT d " +
             "FROM Diary d " +
@@ -34,7 +34,8 @@ public interface DiaryRepository extends JpaRepository<Diary, Long> {
             @Param(value = "now") LocalDate now,
             @Param(value = "userId") Long userId);
 
-    @Query("SELECT new LearnMate.dev.model.dto.response.DiaryCalendarResponse$DiaryDto(d.id, d.createdAt, e.emotion) " +
+
+    @Query("SELECT new LearnMate.dev.model.dto.response.diary.DiaryCalendarResponse$DiaryDto(d.id, d.createdAt, e.emotion) " +
             "FROM Diary d " +
             "JOIN d.emotion e " +
             "WHERE d.user.id = :userId " +
@@ -46,12 +47,14 @@ public interface DiaryRepository extends JpaRepository<Diary, Long> {
             @Param(value = "userId") Long userId);
 
 
-    @Query("SELECT new LearnMate.dev.model.dto.response.DiarySimpleResponse(d.id, d.createdAt, e.emotion, d.content) " +
+    @Query("SELECT new LearnMate.dev.model.dto.response.diary.DiarySimpleResponse(d.id, d.createdAt, e.emotion, d.content) " +
             "FROM Diary d " +
             "JOIN d.emotion e " +
             "WHERE d.complimentCard = :complimentCard " +
+            "AND d.user.id = :userId " +
             "ORDER BY d.createdAt desc")
     List<DiarySimpleResponse> findDiaryByComplimentCard(
-        @Param(value = "complimentCard") ComplimentCard complimentCard
+        @Param(value = "complimentCard") ComplimentCard complimentCard,
+        @Param(value = "userId") Long userId
     );
 }

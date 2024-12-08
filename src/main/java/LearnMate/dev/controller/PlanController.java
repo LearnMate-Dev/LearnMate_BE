@@ -1,12 +1,12 @@
 package LearnMate.dev.controller;
 
 import LearnMate.dev.common.response.ApiResponse;
-import LearnMate.dev.model.dto.request.PlanPostRequest;
-import LearnMate.dev.model.dto.request.PlanPatchRequest;
-import LearnMate.dev.model.dto.request.PlanSaveRequest;
-import LearnMate.dev.model.dto.response.PlanDetailResponse;
-import LearnMate.dev.model.dto.response.PlanListResponse;
-import LearnMate.dev.model.dto.response.PlanRecentResponse;
+import LearnMate.dev.model.dto.request.plan.PlanPostRequest;
+import LearnMate.dev.model.dto.request.plan.PlanPatchRequest;
+import LearnMate.dev.model.dto.request.plan.PlanSaveRequest;
+import LearnMate.dev.model.dto.response.plan.PlanDetailResponse;
+import LearnMate.dev.model.dto.response.plan.PlanListResponse;
+import LearnMate.dev.model.dto.response.plan.PlanRecentResponse;
 import LearnMate.dev.service.PlanService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

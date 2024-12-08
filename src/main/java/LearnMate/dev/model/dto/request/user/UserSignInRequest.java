@@ -1,4 +1,4 @@
-package LearnMate.dev.model.dto.request;
+package LearnMate.dev.model.dto.request.user;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
@@ -13,5 +13,4 @@ public class UserSignInRequest {
 
     @NotBlank(message = "비밀번호를 입력해주세요.")
     private String password;
-
 }

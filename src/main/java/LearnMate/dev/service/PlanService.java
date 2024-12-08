@@ -3,12 +3,12 @@ package LearnMate.dev.service;
 import LearnMate.dev.common.status.ErrorStatus;
 import LearnMate.dev.common.exception.ApiException;
 import LearnMate.dev.model.converter.PlanConverter;
-import LearnMate.dev.model.dto.request.PlanPostRequest;
-import LearnMate.dev.model.dto.request.PlanPatchRequest;
-import LearnMate.dev.model.dto.request.PlanSaveRequest;
-import LearnMate.dev.model.dto.response.PlanDetailResponse;
-import LearnMate.dev.model.dto.response.PlanListResponse;
-import LearnMate.dev.model.dto.response.PlanRecentResponse;
+import LearnMate.dev.model.dto.request.plan.PlanPostRequest;
+import LearnMate.dev.model.dto.request.plan.PlanPatchRequest;
+import LearnMate.dev.model.dto.request.plan.PlanSaveRequest;
+import LearnMate.dev.model.dto.response.plan.PlanDetailResponse;
+import LearnMate.dev.model.dto.response.plan.PlanListResponse;
+import LearnMate.dev.model.dto.response.plan.PlanRecentResponse;
 import LearnMate.dev.model.entity.Plan;
 import LearnMate.dev.model.entity.User;
 import LearnMate.dev.repository.PlanRepository;
@@ -48,7 +48,6 @@ public class PlanService {
         Long userId = getUserIdFromAuthentication();
 
         Plan plan = findRecentPlanByUserId(userId);
-
         return convertGuideToGuides(plan.getGuide());
     }
 
@@ -56,7 +55,8 @@ public class PlanService {
     public List<String> postTodo(PlanPostRequest request) {
         validContentLength(request.getContent());
 
-        return convertGuideToGuides(getTodoGuide(request.getContent()));
+        String todoGuide = getTodoGuide(request.getContent());
+        return convertGuideToGuides(todoGuide);
     }
 
     // Todo Guide 저장
@@ -65,10 +65,12 @@ public class PlanService {
         validContentLength(request.getContent());
 
         Long userId = getUserIdFromAuthentication();
-
         User user = findUserById(userId);
 
-        planRepository.save(PlanConverter.toPlan(request.getContent(), user, convertGuidesToGuide(request.getGuides())));
+        String guides = convertGuidesToGuide(request.getGuides());
+        Plan plan = PlanConverter.toPlan(request.getContent(), user, guides);
+
+        planRepository.save(plan);
 
         return "가이드 저장 완료";
     }
@@ -78,15 +80,20 @@ public class PlanService {
         Long userId = getUserIdFromAuthentication();
 
         Plan plan = findRecentPlanByUserId(userId);
+        List<String> guides = convertGuideToGuides(plan.getGuide());
 
-        return PlanConverter.toPlanRecentResponse(plan.getContent(), convertGuideToGuides(plan.getGuide()));
+        return PlanConverter.toPlanRecentResponse(plan.getContent(), guides);
     }
 
     // Todo 상세 조회
     public PlanDetailResponse getTodoDetail(Long todoId) {
+        Long userId = getUserIdFromAuthentication();
         Plan plan = findPlanByTodoId(todoId);
+        validIsUserAuthorizedForPlan(userId, plan);
 
-        return PlanConverter.toPlanDetailResponse(plan.getContent(), convertGuideToGuides(plan.getGuide()));
+        List<String> guides = convertGuideToGuides(plan.getGuide());
+
+        return PlanConverter.toPlanDetailResponse(plan.getContent(), guides);
     }
 
     // Todo 수정
@@ -95,15 +102,10 @@ public class PlanService {
         validContentLength(request.getContent());
 
         Long userId = getUserIdFromAuthentication();
-
-        User user = findUserById(userId);
-
         Plan plan = findPlanByTodoId(todoId);
-
-        validIsUserAuthorizedForPlan(user, plan);
+        validIsUserAuthorizedForPlan(userId, plan);
 
         String guide = getTodoGuide(request.getContent());
-
         plan.updateContentAndGuide(request.getContent(), guide);
 
         return guide;
@@ -113,12 +115,8 @@ public class PlanService {
     @Transactional
     public String deleteTodo(Long todoId) {
         Long userId = getUserIdFromAuthentication();
-
         Plan plan = findPlanByTodoId(todoId);
-
-        User user = findUserById(userId);
-
-        validIsUserAuthorizedForPlan(user, plan);
+        validIsUserAuthorizedForPlan(userId, plan);
 
         planRepository.delete(plan);
 
@@ -127,12 +125,16 @@ public class PlanService {
 
     private Long getUserIdFromAuthentication() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null)
+            throw new ApiException(ErrorStatus._UNAUTHORIZED);
+
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         return userDetails.getUserId();
     }
 
     private Plan findPlanByTodoId(Long planId) {
-        return planRepository.findById(planId).orElseThrow(() -> new ApiException(ErrorStatus._PLAN_NOT_FOUND));
+        return planRepository.findById(planId)
+                .orElseThrow(() -> new ApiException(ErrorStatus._PLAN_NOT_FOUND));
     }
 
     private Plan findRecentPlanByUserId(Long userId) {
@@ -140,7 +142,8 @@ public class PlanService {
     }
 
     private User findUserById(Long userId) {
-        return userRepository.findById(userId).orElseThrow(() -> new ApiException(ErrorStatus._USER_NOT_FOUND));
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new ApiException(ErrorStatus._USER_NOT_FOUND));
     }
 
     private void validContentLength(String content) {
@@ -148,8 +151,8 @@ public class PlanService {
             throw new ApiException(ErrorStatus._INVALID_DIARY_CONTENT_LENGTH);
     }
 
-    private void validIsUserAuthorizedForPlan(User user, Plan plan) {
-        if (!plan.getUser().equals(user))
+    private void validIsUserAuthorizedForPlan(Long userId, Plan plan) {
+        if (!plan.getUser().getId().equals(userId))
             throw new ApiException(ErrorStatus._USER_FORBIDDEN_PLAN);
     }
 

@@ -1,6 +1,6 @@
 package LearnMate.dev.model.converter;
 
-import LearnMate.dev.model.dto.response.HomeResponse;
+import LearnMate.dev.model.dto.response.home.HomeResponse;
 import LearnMate.dev.model.entity.Diary;
 import LearnMate.dev.model.entity.Plan;
 

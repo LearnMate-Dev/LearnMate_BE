@@ -25,17 +25,13 @@ public class OpenAIService {
         return CompletableFuture.completedFuture(text);
     }
 
-
     public String getTodoGuide(String content) {
 
         return chatModel.call(TODO_GUIDE_PROMPT + content);
-
     }
 
     public String getComplimentCard(String content) {
 
         return chatModel.call(COMPLIMENT_CARD_KEYWORD_PROMPT + content);
-
     }
-
 }

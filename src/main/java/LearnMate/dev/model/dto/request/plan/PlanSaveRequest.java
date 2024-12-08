@@ -1,7 +1,6 @@
-package LearnMate.dev.model.dto.request;
+package LearnMate.dev.model.dto.request.plan;
 
 import jakarta.validation.constraints.NotNull;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -16,11 +15,4 @@ public class PlanSaveRequest {
 
     @NotNull(message = "Todo Guide는 필수입니다.")
     private List<String> guides;
-
-    @Builder
-    public PlanSaveRequest(String content,
-                           List<String> guides) {
-        this.content = content;
-        this.guides = guides;
-    }
 }

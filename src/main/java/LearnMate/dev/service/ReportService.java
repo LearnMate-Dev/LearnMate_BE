@@ -1,13 +1,11 @@
 package LearnMate.dev.service;
 
-import LearnMate.dev.common.status.ErrorStatus;
 import LearnMate.dev.common.exception.ApiException;
+import LearnMate.dev.common.status.ErrorStatus;
 import LearnMate.dev.model.converter.ReportConverter;
-import LearnMate.dev.model.dto.response.ReportResponse;
-import LearnMate.dev.model.entity.User;
+import LearnMate.dev.model.dto.response.report.ReportResponse;
 import LearnMate.dev.model.enums.EmotionSpectrum;
 import LearnMate.dev.repository.EmotionRepository;
-import LearnMate.dev.repository.UserRepository;
 import LearnMate.dev.security.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -22,9 +20,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class ReportService {
-    private final UserRepository userRepository;
     private final EmotionRepository emotionRepository;
-
 
     /*
      * user의 2주동안 나타난 각 감정의 개수를 리스트 형태로 반환
@@ -32,13 +28,12 @@ public class ReportService {
      */
     public ReportResponse.ReportDto getEmotionReport() {
         Long userId = getUserIdFromAuthentication();
-        User user = findUserById(userId);
 
         LocalDate now = LocalDate.now();
         LocalDate twoWeekAgo = now.minusDays(14);
 
         // 2주동안 나타난 각 감정의 개수 반환
-        List<ReportResponse.EmotionDto> emotionDtoList = getEmotionDtoList(twoWeekAgo, now, user);
+        List<ReportResponse.EmotionDto> emotionDtoList = getEmotionDtoList(twoWeekAgo, now, userId);
         List<ReportResponse.ReportEmotionDto> reportEmotionDtoList = ReportConverter.toReportEmotionDtoList(emotionDtoList);
 
         return ReportConverter.toReportDto(reportEmotionDtoList);
@@ -50,17 +45,16 @@ public class ReportService {
      */
     public ReportResponse.ReportDetailDto getEmotionDetailReport() {
         Long userId = getUserIdFromAuthentication();
-        User user = findUserById(userId);
 
         LocalDate now = LocalDate.now();
         LocalDate twoWeekAgo = now.minusDays(14);
 
         // 각 감정의 개수
-        List<ReportResponse.EmotionDto> emotionDtoList = getEmotionDtoList(twoWeekAgo, now, user);
+        List<ReportResponse.EmotionDto> emotionDtoList = getEmotionDtoList(twoWeekAgo, now, userId);
         List<ReportResponse.ReportEmotionDto> reportEmotionDtoList = ReportConverter.toReportEmotionDtoList(emotionDtoList);
 
         // 각 날짜에 나타난 감정
-        List<ReportResponse.EmotionOnDayDto> emotionOnDayDtoList = getEmotionOnDay(twoWeekAgo, now, user);
+        List<ReportResponse.EmotionOnDayDto> emotionOnDayDtoList = getEmotionOnDay(twoWeekAgo, now, userId);
 
         // 해당 기간동안 가장 많이 나타난 감정 3개
         List<ReportResponse.EmotionRankDto> emotionRankDtoList = getEmotionRank(reportEmotionDtoList);
@@ -68,8 +62,8 @@ public class ReportService {
         return ReportConverter.toReportDetailDto(reportEmotionDtoList, emotionOnDayDtoList, emotionRankDtoList);
     }
 
-    private List<ReportResponse.EmotionDto> getEmotionDtoList(LocalDate startDate, LocalDate endDate, User user) {
-        List<ReportResponse.EmotionDto> emotionDtoList = emotionRepository.findEmotionDtoByUser(startDate, endDate, user);
+    private List<ReportResponse.EmotionDto> getEmotionDtoList(LocalDate startDate, LocalDate endDate, Long userId) {
+        List<ReportResponse.EmotionDto> emotionDtoList = emotionRepository.findEmotionDtoByUser(startDate, endDate, userId);
         return getDefaultEmotionDtoAndParse(emotionDtoList);
     }
 
@@ -88,8 +82,8 @@ public class ReportService {
                 .toList();
     }
 
-    private List<ReportResponse.EmotionOnDayDto> getEmotionOnDay(LocalDate startDate, LocalDate endDate, User user) {
-        return emotionRepository.findEmotionOnDayDtoByUser(startDate, endDate, user);
+    private List<ReportResponse.EmotionOnDayDto> getEmotionOnDay(LocalDate startDate, LocalDate endDate, Long userId) {
+        return emotionRepository.findEmotionOnDayDtoByUser(startDate, endDate, userId);
     }
 
     private List<ReportResponse.EmotionRankDto> getEmotionRank(List<ReportResponse.ReportEmotionDto> emotionDtoList) {
@@ -109,11 +103,10 @@ public class ReportService {
 
     private Long getUserIdFromAuthentication() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null)
+            throw new ApiException(ErrorStatus._UNAUTHORIZED);
+
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         return userDetails.getUserId();
-    }
-
-    private User findUserById(Long userId) {
-        return userRepository.findById(userId).orElseThrow(() -> new ApiException(ErrorStatus._USER_NOT_FOUND));
     }
 }

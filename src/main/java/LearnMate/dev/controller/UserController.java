@@ -1,10 +1,10 @@
 package LearnMate.dev.controller;
 
 import LearnMate.dev.common.response.ApiResponse;
-import LearnMate.dev.model.dto.request.UserSignInRequest;
-import LearnMate.dev.model.dto.request.UserSignUpRequest;
-import LearnMate.dev.model.dto.response.HomeResponse;
-import LearnMate.dev.model.dto.response.TokenDto;
+import LearnMate.dev.model.dto.request.user.UserSignInRequest;
+import LearnMate.dev.model.dto.request.user.UserSignUpRequest;
+import LearnMate.dev.model.dto.response.home.HomeResponse;
+import LearnMate.dev.model.dto.response.token.TokenDto;
 import LearnMate.dev.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;

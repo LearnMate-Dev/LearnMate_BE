@@ -1,7 +1,7 @@
 package LearnMate.dev.model.converter;
 
-import LearnMate.dev.model.dto.response.ComplimentCardListResponse;
-import LearnMate.dev.model.dto.response.ComplimentCardResponse;
+import LearnMate.dev.model.dto.response.compliment.ComplimentCardListResponse;
+import LearnMate.dev.model.dto.response.compliment.ComplimentCardResponse;
 import LearnMate.dev.model.entity.ComplimentCard;
 import LearnMate.dev.model.entity.User;
 import LearnMate.dev.model.enums.ComplimentKeyword;
@@ -25,7 +25,6 @@ public class ComplimentCardConverter {
                         .complimentKeyword(complimentCard.getKeyword().getValue())
                         .build())
                 .toList();
-
     }
 
     public static ComplimentCardResponse toComplimentCardResponse(ComplimentCard complimentCard) {

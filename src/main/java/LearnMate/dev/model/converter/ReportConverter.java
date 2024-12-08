@@ -1,6 +1,6 @@
 package LearnMate.dev.model.converter;
 
-import LearnMate.dev.model.dto.response.ReportResponse;
+import LearnMate.dev.model.dto.response.report.ReportResponse;
 
 import java.util.List;
 
