@@ -1,6 +1,6 @@
 package LearnMate.dev.common.util;
 
-import LearnMate.dev.common.ErrorStatus;
+import LearnMate.dev.common.status.ErrorStatus;
 import LearnMate.dev.common.exception.ApiException;
 import org.springframework.core.io.ClassPathResource;
 

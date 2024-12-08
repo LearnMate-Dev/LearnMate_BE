@@ -1,4 +1,4 @@
-package LearnMate.dev.model.dto.response;
+package LearnMate.dev.model.dto.response.diary;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,6 +9,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class TokenDto {
-    private String accessToken;
+public class DiaryAnalysisResponse {
+
+    private Float emotionScore;
+    private String actionTip;
+
 }

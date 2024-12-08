@@ -1,4 +1,4 @@
-package LearnMate.dev.model.dto.request;
+package LearnMate.dev.model.dto.request.plan;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
@@ -6,9 +6,8 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class DiaryAnalysisRequest {
+public class PlanPatchRequest {
 
-    @NotBlank(message = "일기 내용을 입력해주세요.")
+    @NotBlank(message = "수정할 계획은 필수입니다.")
     private String content;
-
 }

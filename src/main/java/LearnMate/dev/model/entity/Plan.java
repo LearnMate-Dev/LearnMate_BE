@@ -1,6 +1,6 @@
 package LearnMate.dev.model.entity;
 
-import LearnMate.dev.common.BaseTimeEntity;
+import LearnMate.dev.common.base.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -15,10 +15,10 @@ public class Plan extends BaseTimeEntity {
     @Column(name = "plan_id")
     private Long id;
 
-    @Column(length = 300, nullable = false)
+    @Column(name = "plan_content", length = 300, nullable = false)
     private String content;
 
-    @Column(nullable = false)
+    @Column(name = "plan_guide", nullable = false)
     private String guide;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -31,5 +31,4 @@ public class Plan extends BaseTimeEntity {
             this.guide = guide;
         }
     }
-
 }

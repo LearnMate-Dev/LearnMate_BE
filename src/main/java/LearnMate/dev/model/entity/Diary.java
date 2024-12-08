@@ -1,6 +1,6 @@
 package LearnMate.dev.model.entity;
 
-import LearnMate.dev.common.BaseTimeEntity;
+import LearnMate.dev.common.base.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -15,7 +15,7 @@ public class Diary extends BaseTimeEntity {
     @Column(name = "diary_id")
     private Long id;
 
-    @Column(length = 500, nullable = false)
+    @Column(name = "diary_content", length = 500, nullable = false)
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -37,5 +37,4 @@ public class Diary extends BaseTimeEntity {
             this.content = content;
         }
     }
-
 }

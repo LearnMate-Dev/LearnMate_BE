@@ -1,6 +1,6 @@
 package LearnMate.dev.model.entity;
 
-import LearnMate.dev.common.BaseTimeEntity;
+import LearnMate.dev.common.base.BaseTimeEntity;
 import LearnMate.dev.model.enums.ComplimentKeyword;
 import jakarta.persistence.*;
 import lombok.*;
@@ -19,7 +19,7 @@ public class ComplimentCard extends BaseTimeEntity {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "keyword", nullable = false)
+    @Column(name = "compliments_keyword", nullable = false)
     private ComplimentKeyword keyword;
 
     @ManyToOne(fetch = FetchType.LAZY)

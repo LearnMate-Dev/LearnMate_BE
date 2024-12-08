@@ -1,9 +1,9 @@
 package LearnMate.dev.controller;
 
-import LearnMate.dev.common.ApiResponse;
-import LearnMate.dev.model.dto.response.ComplimentCardListResponse;
-import LearnMate.dev.model.dto.response.ComplimentCardResponse;
-import LearnMate.dev.model.dto.response.DiarySimpleResponse;
+import LearnMate.dev.common.response.ApiResponse;
+import LearnMate.dev.model.dto.response.compliment.ComplimentCardListResponse;
+import LearnMate.dev.model.dto.response.compliment.ComplimentCardResponse;
+import LearnMate.dev.model.dto.response.diary.DiarySimpleResponse;
 import LearnMate.dev.service.ComplimentCardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -23,16 +23,16 @@ public class ComplimentCardController {
     }
 
     @GetMapping("/{complimentId}/detail")
-    public ApiResponse<ComplimentCardResponse> getComplimentCardDetail(@PathVariable("complimentId") Long complimentId) {
-
+    public ApiResponse<ComplimentCardResponse> getComplimentCardDetail(
+            @PathVariable("complimentId") Long complimentId
+    ) {
         return ApiResponse.onSuccessData("칭찬카드 상세 조회 성공", complimentCardService.getComplimentCardDetail(complimentId));
-
     }
 
     @GetMapping("/{complimentId}/diaries")
-    public ApiResponse<List<DiarySimpleResponse>> getComplimentCardDiaries(@PathVariable("complimentId") Long complimentId) {
-
+    public ApiResponse<List<DiarySimpleResponse>> getComplimentCardDiaries(
+            @PathVariable("complimentId") Long complimentId
+    ) {
         return ApiResponse.onSuccessData("칭찬카드 관련 일기 조회 성공", complimentCardService.getComplimentCardDiaries(complimentId));
-
     }
 }

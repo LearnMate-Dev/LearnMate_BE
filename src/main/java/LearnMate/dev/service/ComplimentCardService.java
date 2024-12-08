@@ -1,11 +1,11 @@
 package LearnMate.dev.service;
 
-import LearnMate.dev.common.ErrorStatus;
+import LearnMate.dev.common.status.ErrorStatus;
 import LearnMate.dev.common.exception.ApiException;
 import LearnMate.dev.model.converter.ComplimentCardConverter;
-import LearnMate.dev.model.dto.response.ComplimentCardListResponse;
-import LearnMate.dev.model.dto.response.ComplimentCardResponse;
-import LearnMate.dev.model.dto.response.DiarySimpleResponse;
+import LearnMate.dev.model.dto.response.compliment.ComplimentCardListResponse;
+import LearnMate.dev.model.dto.response.compliment.ComplimentCardResponse;
+import LearnMate.dev.model.dto.response.diary.DiarySimpleResponse;
 import LearnMate.dev.model.entity.ComplimentCard;
 import LearnMate.dev.model.entity.User;
 import LearnMate.dev.model.enums.ComplimentKeyword;
@@ -68,7 +68,6 @@ public class ComplimentCardService {
         List<ComplimentCard> complimentCards = findComplimentCardsByUserId(userId);
 
         return ComplimentCardConverter.toComplimentCardListResponseList(complimentCards);
-
     }
 
     // 칭찬카드 상세 조회
@@ -76,7 +75,6 @@ public class ComplimentCardService {
 
         Long userId = getUserIdFromAuthentication();
         ComplimentCard complimentCard = findComplimentCardById(complimentId);
-
         validIsUserAuthorizedForComplimentCard(userId, complimentCard);
 
         return ComplimentCardConverter.toComplimentCardResponse(complimentCard);
@@ -93,14 +91,16 @@ public class ComplimentCardService {
 
         Long userId = getUserIdFromAuthentication();
         ComplimentCard complimentCard = findComplimentCardById(complimentId);
-
         validIsUserAuthorizedForComplimentCard(userId, complimentCard);
 
-        return diaryRepository.findDiaryByComplimentCard(complimentCard);
+        return diaryRepository.findDiaryByComplimentCard(complimentCard, userId);
     }
 
     private Long getUserIdFromAuthentication() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null)
+            throw new ApiException(ErrorStatus._UNAUTHORIZED);
+
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         return userDetails.getUserId();
     }

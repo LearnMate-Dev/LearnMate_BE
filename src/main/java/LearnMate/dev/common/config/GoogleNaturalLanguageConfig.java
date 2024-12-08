@@ -32,7 +32,6 @@ public class GoogleNaturalLanguageConfig {
         }
 
         // GoogleCredentials 생성
-        log.info("GCP = "+GoogleCredentials.fromStream(new FileInputStream(gcpCredentials)));
         return GoogleCredentials.fromStream(new FileInputStream(gcpCredentials));
     }
 

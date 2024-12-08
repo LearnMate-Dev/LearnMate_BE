@@ -1,4 +1,4 @@
-package LearnMate.dev.common;
+package LearnMate.dev.common.status;
 
 import LearnMate.dev.model.BaseCode;
 import LearnMate.dev.model.dto.ReasonDto;

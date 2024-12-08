@@ -1,4 +1,4 @@
-package LearnMate.dev.model.dto.response;
+package LearnMate.dev.model.dto.response.diary;
 
 import LearnMate.dev.model.enums.EmotionSpectrum;
 import lombok.AllArgsConstructor;

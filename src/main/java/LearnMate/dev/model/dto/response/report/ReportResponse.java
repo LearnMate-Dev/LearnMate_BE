@@ -1,4 +1,4 @@
-package LearnMate.dev.model.dto.response;
+package LearnMate.dev.model.dto.response.report;
 
 import LearnMate.dev.model.enums.EmotionSpectrum;
 import lombok.AllArgsConstructor;
@@ -36,7 +36,6 @@ public class ReportResponse {
     public static class ReportEmotionDto {
 
         private String emotion;
-        private String emoticon;
         private Long count;
 
     }
@@ -48,12 +47,10 @@ public class ReportResponse {
     public static class EmotionOnDayDto {
 
         private String emotion;
-        private String emoticon;
         private String day;
 
         public EmotionOnDayDto(EmotionSpectrum emotion, LocalDateTime date) {
             this.emotion = emotion.getValue();
-            this.emoticon = emotion.getEmoticon();
             this.day = date.format(DateTimeFormatter.ofPattern("MM/dd"));
         }
     }
@@ -65,7 +62,6 @@ public class ReportResponse {
     public static class EmotionRankDto {
 
         private String emotion;
-        private String emoticon;
         private Long rank;
 
     }
@@ -91,7 +87,6 @@ public class ReportResponse {
         private List<EmotionRankDto> emotionRankDtoList;
 
     }
-
 }
 
 

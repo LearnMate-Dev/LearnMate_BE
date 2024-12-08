@@ -1,13 +1,13 @@
 package LearnMate.dev.service;
 
 import LearnMate.dev.common.exception.ApiException;
-import LearnMate.dev.common.ErrorStatus;
+import LearnMate.dev.common.status.ErrorStatus;
 import LearnMate.dev.model.converter.HomeConverter;
 import LearnMate.dev.model.converter.TokenConverter;
-import LearnMate.dev.model.dto.request.UserSignInRequest;
-import LearnMate.dev.model.dto.request.UserSignUpRequest;
-import LearnMate.dev.model.dto.response.HomeResponse;
-import LearnMate.dev.model.dto.response.TokenDto;
+import LearnMate.dev.model.dto.request.user.UserSignInRequest;
+import LearnMate.dev.model.dto.request.user.UserSignUpRequest;
+import LearnMate.dev.model.dto.response.home.HomeResponse;
+import LearnMate.dev.model.dto.response.token.TokenDto;
 import LearnMate.dev.model.entity.Diary;
 import LearnMate.dev.model.entity.Plan;
 import LearnMate.dev.model.entity.User;
@@ -62,7 +62,6 @@ public class UserService {
         jwtProvider.storeRefreshTokenInSession(user, session);
 
         return TokenConverter.toToken(accessToken);
-
     }
 
     private void validPassword(String password, String originPassword) {
@@ -110,6 +109,9 @@ public class UserService {
 
     private Long getUserIdFromAuthentication() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null)
+            throw new ApiException(ErrorStatus._UNAUTHORIZED);
+
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         return userDetails.getUserId();
     }

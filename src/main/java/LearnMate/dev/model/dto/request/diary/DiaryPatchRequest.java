@@ -1,4 +1,4 @@
-package LearnMate.dev.model.dto.request;
+package LearnMate.dev.model.dto.request.diary;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

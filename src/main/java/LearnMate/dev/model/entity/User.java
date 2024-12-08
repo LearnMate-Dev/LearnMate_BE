@@ -1,6 +1,6 @@
 package LearnMate.dev.model.entity;
 
-import LearnMate.dev.common.BaseTimeEntity;
+import LearnMate.dev.common.base.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;

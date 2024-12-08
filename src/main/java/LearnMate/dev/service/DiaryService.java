@@ -1,20 +1,18 @@
 package LearnMate.dev.service;
 
 import LearnMate.dev.common.exception.ApiException;
-import LearnMate.dev.common.ErrorStatus;
+import LearnMate.dev.common.status.ErrorStatus;
 import LearnMate.dev.model.converter.ActionTipConverter;
-import LearnMate.dev.model.converter.ComplimentCardConverter;
 import LearnMate.dev.model.converter.DiaryConverter;
 import LearnMate.dev.model.converter.EmotionConverter;
-import LearnMate.dev.model.dto.request.DiaryAnalysisRequest;
-import LearnMate.dev.model.dto.request.DiaryPatchRequest;
-import LearnMate.dev.model.dto.request.DiaryPostRequest;
-import LearnMate.dev.model.dto.response.DiaryAnalysisResponse;
-import LearnMate.dev.model.dto.response.DiaryCalendarResponse;
-import LearnMate.dev.model.dto.response.DiaryDetailResponse;
+import LearnMate.dev.model.dto.request.diary.DiaryAnalysisRequest;
+import LearnMate.dev.model.dto.request.diary.DiaryPatchRequest;
+import LearnMate.dev.model.dto.request.diary.DiaryPostRequest;
+import LearnMate.dev.model.dto.response.diary.DiaryAnalysisResponse;
+import LearnMate.dev.model.dto.response.diary.DiaryCalendarResponse;
+import LearnMate.dev.model.dto.response.diary.DiaryDetailResponse;
 import LearnMate.dev.model.entity.*;
 import LearnMate.dev.model.enums.EmotionSpectrum;
-import LearnMate.dev.repository.ComplimentCardRepository;
 import LearnMate.dev.repository.DiaryRepository;
 import LearnMate.dev.repository.UserRepository;
 import LearnMate.dev.security.security.CustomUserDetails;
@@ -48,9 +46,9 @@ public class DiaryService {
      * @return
      */
     public DiaryAnalysisResponse analyzeDiary(DiaryAnalysisRequest request) {
+
         Long userId = getUserIdFromAuthentication();
-        User user = findUserById(userId);
-//        validIsUserPostDiary(user);
+//        validIsUserPostDiary(userId);
 
         // content 길이 검사
         String content = request.getContent();
@@ -93,11 +91,12 @@ public class DiaryService {
         diaryRepository.save(diary);
 
         return DiaryConverter.toDiaryDetailResponse(diary);
-
     }
 
     @Transactional
-    public Diary createDiary(User user, DiaryPostRequest request, EmotionSpectrum emotionSpectrum, ComplimentCard complimentCard) {
+    public Diary createDiary(User user, DiaryPostRequest request,
+                             EmotionSpectrum emotionSpectrum, ComplimentCard complimentCard) {
+
         Emotion emotion = EmotionConverter.toEmotion(request.getScore(), emotionSpectrum);
         ActionTip actionTip = ActionTipConverter.toActionTip(request.getActionTip());
         Diary diary = DiaryConverter.toDiary(request.getContent(), user, emotion, actionTip, complimentCard);
@@ -118,9 +117,8 @@ public class DiaryService {
     public DiaryDetailResponse patchDiary(DiaryPatchRequest request) {
         // user - diary 권한 검사
         Long userId = getUserIdFromAuthentication();
-        User user = findUserById(userId);
         Diary diary = findDiaryById(request.getDiaryId());
-        validIsUserAuthorizedForDiary(user, diary);
+        validIsUserAuthorizedForDiary(userId, diary);
 
         // 일기 작성 날짜 검사
         validDiaryCreatedAt(diary);
@@ -146,9 +144,8 @@ public class DiaryService {
     public void deleteDiary(Long diaryId) {
         // user - diary 권한 검사
         Long userId = getUserIdFromAuthentication();
-        User user = findUserById(userId);
         Diary diary = findDiaryById(diaryId);
-        validIsUserAuthorizedForDiary(user, diary);
+        validIsUserAuthorizedForDiary(userId, diary);
 
         diaryRepository.delete(diary);
     }
@@ -162,9 +159,8 @@ public class DiaryService {
     public DiaryDetailResponse getDiaryDetail(Long diaryId) {
         // user - diary 권한 검사
         Long userId = getUserIdFromAuthentication();
-        User user = findUserById(userId);
         Diary diary = findDiaryById(diaryId);
-        validIsUserAuthorizedForDiary(user, diary);
+        validIsUserAuthorizedForDiary(userId, diary);
 
         return DiaryConverter.toDiaryDetailResponse(diary);
     }
@@ -182,8 +178,8 @@ public class DiaryService {
         return DiaryConverter.toDiaryCalendarResponse(diaryDtoList);
     }
 
-    private void validIsUserPostDiary(User user) {
-        if (diaryRepository.existsDiaryByCreatedAt(user, LocalDate.now()))
+    private void validIsUserPostDiary(Long userId) {
+        if (diaryRepository.existsDiaryByCreatedAt(userId, LocalDate.now()))
             throw new ApiException(ErrorStatus._DUPLICATE_DIARY_DATE);
     }
 
@@ -192,8 +188,8 @@ public class DiaryService {
             throw new ApiException(ErrorStatus._INVALID_DIARY_CONTENT_LENGTH);
     }
 
-    private void validIsUserAuthorizedForDiary(User user, Diary diary) {
-        if (!diary.getUser().equals(user))
+    private void validIsUserAuthorizedForDiary(Long userId, Diary diary) {
+        if (!diary.getUser().getId().equals(userId))
             throw new ApiException(ErrorStatus._USER_FORBIDDEN_DIARY);
     }
 
@@ -225,6 +221,9 @@ public class DiaryService {
 
     private Long getUserIdFromAuthentication() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null)
+            throw new ApiException(ErrorStatus._UNAUTHORIZED);
+
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         return userDetails.getUserId();
     }

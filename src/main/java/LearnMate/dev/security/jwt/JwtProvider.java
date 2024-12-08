@@ -1,6 +1,6 @@
 package LearnMate.dev.security.jwt;
 
-import LearnMate.dev.common.ErrorStatus;
+import LearnMate.dev.common.status.ErrorStatus;
 import LearnMate.dev.common.exception.ApiException;
 import LearnMate.dev.model.entity.User;
 import LearnMate.dev.security.security.CustomUserDetails;
@@ -95,7 +95,7 @@ public class JwtProvider {
     }
 
     // AccessToken 갱신
-    public Authentication refreshAccessToken(String refreshToken, HttpServletResponse response, User user) {
+    public Authentication refreshAccessToken(String refreshToken, User user) {
         if ("VALID".equals(validateToken(refreshToken))) {
             // 새 AccessToken 생성
             String newAccessToken = generateAccessToken(user);

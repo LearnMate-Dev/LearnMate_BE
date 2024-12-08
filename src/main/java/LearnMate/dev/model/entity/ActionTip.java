@@ -1,6 +1,6 @@
 package LearnMate.dev.model.entity;
 
-import LearnMate.dev.common.BaseTimeEntity;
+import LearnMate.dev.common.base.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -15,7 +15,7 @@ public class ActionTip extends BaseTimeEntity {
     @Column(name = "action_tip_id")
     private Long id;
 
-    @Column(nullable = false)
+    @Column(name = "action_tip_content", nullable = false)
     private String content;
 
     @OneToOne(fetch = FetchType.LAZY)

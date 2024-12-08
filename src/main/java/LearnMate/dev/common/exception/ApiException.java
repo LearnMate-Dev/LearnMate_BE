@@ -1,6 +1,6 @@
 package LearnMate.dev.common.exception;
 
-import LearnMate.dev.common.ErrorStatus;
+import LearnMate.dev.common.status.ErrorStatus;
 import LearnMate.dev.model.dto.ErrorReasonDto;
 import lombok.Getter;
 

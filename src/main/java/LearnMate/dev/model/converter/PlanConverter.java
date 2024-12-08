@@ -1,9 +1,9 @@
 package LearnMate.dev.model.converter;
 
 
-import LearnMate.dev.model.dto.response.PlanDetailResponse;
-import LearnMate.dev.model.dto.response.PlanListResponse;
-import LearnMate.dev.model.dto.response.PlanRecentResponse;
+import LearnMate.dev.model.dto.response.plan.PlanDetailResponse;
+import LearnMate.dev.model.dto.response.plan.PlanListResponse;
+import LearnMate.dev.model.dto.response.plan.PlanRecentResponse;
 import LearnMate.dev.model.entity.Plan;
 import LearnMate.dev.model.entity.User;
 
@@ -24,7 +24,7 @@ public class PlanConverter {
                 .map(plan -> PlanListResponse.builder()
                         .todoId(plan.getId())
                         .content(plan.getContent())
-                        .createdAt(plan.getCreatedAt().toString())
+                        .createdAt(plan.getCreatedAtFormatted())
                         .build())
                 .collect(Collectors.toList());
     }
