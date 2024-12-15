@@ -20,14 +20,14 @@ public class DiaryCalendarResponse {
 
         private Long diaryId;
         private String date;
-        private String emoticon;
+        private String emotion;
 
         public DiaryDto(Long diaryId, LocalDateTime date, EmotionSpectrum emoticon) {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
             this.diaryId = diaryId;
             this.date = date.format(formatter);
-            this.emoticon = emoticon.getEmoticon();
+            this.emotion = emoticon.getValue();
         }
     }
 
