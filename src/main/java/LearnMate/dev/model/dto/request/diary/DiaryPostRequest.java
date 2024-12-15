@@ -20,4 +20,6 @@ public class DiaryPostRequest {
 
     @NotBlank(message = "행동 요령 제안을 입력해주세요.")
     private String actionTip;
+
+    private String compliment;
 }

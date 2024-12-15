@@ -13,5 +13,6 @@ public class DiaryAnalysisResponse {
 
     private Float emotionScore;
     private String actionTip;
+    private String compliment;
 
 }
