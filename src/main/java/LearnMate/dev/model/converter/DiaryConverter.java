@@ -27,13 +27,15 @@ public class DiaryConverter {
                 .content(diary.getContent())
                 .emotion(diary.getEmotion().getEmotion().getValue())
                 .actionTip(diary.getActionTip().getContent())
+                .compliment(diary.getComplimentCard().getKeyword().getValue())
                 .build();
     }
 
-    public static DiaryAnalysisResponse toDiaryAnalysisResponse(Float score, String actionTip) {
+    public static DiaryAnalysisResponse toDiaryAnalysisResponse(Float score, String actionTip, String compliment) {
         return DiaryAnalysisResponse.builder()
                 .emotionScore(score)
                 .actionTip(actionTip)
+                .compliment(compliment)
                 .build();
     }
 

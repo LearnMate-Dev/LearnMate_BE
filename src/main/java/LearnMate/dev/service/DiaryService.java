@@ -60,8 +60,24 @@ public class DiaryService {
         // 행동 요령 제안
         CompletableFuture<String> actionTipFuture = openAIService.getActionTip(content);
 
-        // 두 CompletableFuture 조합
-        return scoreFuture.thenCombine(actionTipFuture, DiaryConverter::toDiaryAnalysisResponse).join();
+        // 칭찬 키워드 분석
+        CompletableFuture<String> complimentFuture = openAIService.getComplimentCard(content);
+
+
+        // 세 CompletableFuture 조합
+        return CompletableFuture.allOf(scoreFuture, actionTipFuture, complimentFuture)
+                .thenApply(ignored -> {
+                    try {
+                        Float score = scoreFuture.get();
+                        String actionTip = actionTipFuture.get();
+                        String compliment = complimentFuture.get();
+
+                        return DiaryConverter.toDiaryAnalysisResponse(score, actionTip, compliment);
+                    } catch (Exception e) {
+                        throw new RuntimeException("Failed to combine CompletableFutures", e);
+                    }
+                })
+                .join();
     }
 
     /*
@@ -84,7 +100,7 @@ public class DiaryService {
         EmotionSpectrum emotionSpectrum = validEmotion(request.getScore(), request.getEmotion());
 
         // 칭찬 카드 생성 및 조회
-        ComplimentCard complimentCard = complimentCardService.createComplimentCard(request.getContent(), user);
+        ComplimentCard complimentCard = complimentCardService.createComplimentCard(request.getCompliment(), user);
 
         // 객체 생성 및 연관관계 설정
         Diary diary = createDiary(user, request, emotionSpectrum, complimentCard);
@@ -129,8 +145,6 @@ public class DiaryService {
 
         // content 정보 수정
         diary.updateContent(content);
-
-        // TODO: 감정 분석 API 호출
 
         return DiaryConverter.toDiaryDetailResponse(diary);
     }

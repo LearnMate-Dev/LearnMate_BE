@@ -27,15 +27,12 @@ public class ComplimentCardService {
 
     private final ComplimentCardRepository complimentCardRepository;
     private final DiaryRepository diaryRepository;
-    private final OpenAIService openAIService;
-
 
     // 칭찬카드 생성 및 조회
     @Transactional
-    public ComplimentCard createComplimentCard(String content, User user) {
+    public ComplimentCard createComplimentCard(String keywordValue, User user) {
 
         // 칭찬 keyword 파싱
-        String keywordValue = openAIService.getComplimentCard(content);
         ComplimentKeyword keyword = getComplimentKeyword(keywordValue);
 
         // compliment card entity 조회 및 생성

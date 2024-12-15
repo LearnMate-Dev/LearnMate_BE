@@ -30,8 +30,11 @@ public class OpenAIService {
         return chatModel.call(TODO_GUIDE_PROMPT + content);
     }
 
-    public String getComplimentCard(String content) {
+    @Async
+    public CompletableFuture<String> getComplimentCard(String content) {
 
-        return chatModel.call(COMPLIMENT_CARD_KEYWORD_PROMPT + content);
+        String keyword = chatModel.call(COMPLIMENT_CARD_KEYWORD_PROMPT + content);
+
+        return CompletableFuture.completedFuture(keyword);
     }
 }

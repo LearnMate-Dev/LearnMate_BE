@@ -15,5 +15,6 @@ public class DiaryDetailResponse {
     private String content;
     private String emotion; // 감정 지표
     private String actionTip;
+    private String compliment;
 
 }
