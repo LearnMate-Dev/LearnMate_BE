@@ -9,6 +9,7 @@ import LearnMate.dev.model.dto.response.diary.DiaryCalendarResponse;
 import LearnMate.dev.model.dto.response.diary.DiaryDetailResponse;
 import LearnMate.dev.service.DiaryService;
 import jakarta.validation.Valid;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
@@ -56,6 +57,14 @@ public class DiaryController {
             @PathVariable(value = "diaryId") Long diaryId
     ) {
         return ApiResponse.onSuccessData("일기 상세 조회 성공", diaryService.getDiaryDetail(diaryId));
+    }
+
+    @GetMapping
+    public ApiResponse<DiaryDetailResponse> getDiaryDetailByDate(
+            @RequestParam(value = "date")
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
+    ) {
+        return ApiResponse.onSuccessData("일기 상세 조회 성공", diaryService.getDiaryDetailByDate(date));
     }
 
     @GetMapping("/calendar")

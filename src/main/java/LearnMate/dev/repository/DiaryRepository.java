@@ -57,4 +57,13 @@ public interface DiaryRepository extends JpaRepository<Diary, Long> {
         @Param(value = "complimentCard") ComplimentCard complimentCard,
         @Param(value = "userId") Long userId
     );
+
+    @Query(value = "SELECT d " +
+            "FROM Diary d " +
+            "JOIN FETCH d.emotion e " +
+            "JOIN FETCH d.actionTip ac " +
+            "WHERE d.user.id = :userId " +
+            "AND DATE(d.createdAt) = :date")
+    List<Diary> findDiaryByCreatedAt(@Param(value = "date") LocalDate date,
+                                     @Param(value = "userId") Long userId);
 }

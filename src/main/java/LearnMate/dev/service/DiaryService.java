@@ -182,6 +182,17 @@ public class DiaryService {
     }
 
     /*
+     * 해당 날짜에 작성된 diary의 상세 정보를 반환
+     * @param date
+     * @return
+     */
+    public DiaryDetailResponse getDiaryDetailByDate(LocalDate date) {
+        Long userId = getUserIdFromAuthentication();
+        Diary diary = findDiaryByDate(date, userId);
+        return DiaryConverter.toDiaryDetailResponse(diary);
+    }
+
+    /*
      * 해당 월에 나타난 감정 리스트를 날짜와 함께 반환
      * @return
      */
@@ -233,6 +244,14 @@ public class DiaryService {
     private Diary findDiaryById(Long diaryId) {
         return diaryRepository.findById(diaryId)
                 .orElseThrow(() -> new ApiException(ErrorStatus._DIARY_NOT_FOUND));
+    }
+
+    private Diary findDiaryByDate(LocalDate date, Long userId) {
+        List<Diary> diary = diaryRepository.findDiaryByCreatedAt(date, userId);
+        if (diary.isEmpty())
+            throw new ApiException(ErrorStatus._DIARY_NOT_FOUND);
+
+        return diary.get(0);
     }
 
     private Long getUserIdFromAuthentication() {
