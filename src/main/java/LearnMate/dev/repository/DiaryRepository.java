@@ -35,7 +35,7 @@ public interface DiaryRepository extends JpaRepository<Diary, Long> {
             @Param(value = "userId") Long userId);
 
 
-    @Query("SELECT new LearnMate.dev.model.dto.response.diary.DiaryCalendarResponse$DiaryDto(d.id, d.createdAt, e.emotion) " +
+    @Query("SELECT new LearnMate.dev.model.dto.response.diary.DiaryCalendarResponse$DiaryDto(d.createdAt, e.emotion) " +
             "FROM Diary d " +
             "JOIN d.emotion e " +
             "WHERE d.user.id = :userId " +

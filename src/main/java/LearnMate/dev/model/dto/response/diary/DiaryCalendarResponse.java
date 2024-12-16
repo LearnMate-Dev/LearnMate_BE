@@ -18,14 +18,12 @@ public class DiaryCalendarResponse {
     @NoArgsConstructor
     public static class DiaryDto {
 
-        private Long diaryId;
         private String date;
         private String emotion;
 
-        public DiaryDto(Long diaryId, LocalDateTime date, EmotionSpectrum emoticon) {
+        public DiaryDto(LocalDateTime date, EmotionSpectrum emoticon) {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-            this.diaryId = diaryId;
             this.date = date.format(formatter);
             this.emotion = emoticon.getValue();
         }
