@@ -93,6 +93,7 @@ public class ComplimentCardService {
         return diaryRepository.findDiaryByComplimentCard(complimentCard, userId);
     }
 
+    @Transactional
     public void deleteComplimentCard(Long userId) {
         Long complimentId = complimentCardRepository.findByDiaryAndUserId(userId);
         complimentCardRepository.deleteById(complimentId);

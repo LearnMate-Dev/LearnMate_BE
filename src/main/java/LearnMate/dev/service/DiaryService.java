@@ -162,6 +162,7 @@ public class DiaryService {
         validIsUserAuthorizedForDiary(userId, diary);
 
         diaryRepository.delete(diary);
+        diaryRepository.flush();
         complimentCardService.deleteComplimentCard(userId);
     }
 
