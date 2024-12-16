@@ -93,6 +93,11 @@ public class ComplimentCardService {
         return diaryRepository.findDiaryByComplimentCard(complimentCard, userId);
     }
 
+    public void deleteComplimentCard(Long userId) {
+        Long complimentId = complimentCardRepository.findByDiaryAndUserId(userId);
+        complimentCardRepository.deleteById(complimentId);
+    }
+
     private Long getUserIdFromAuthentication() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null)

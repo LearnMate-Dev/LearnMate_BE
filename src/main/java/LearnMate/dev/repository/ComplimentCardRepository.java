@@ -23,4 +23,12 @@ public interface ComplimentCardRepository extends JpaRepository<ComplimentCard, 
 
     Optional<ComplimentCard> findByKeywordAndUser(ComplimentKeyword keyword, User user);
 
+    @Query(value = "SELECT c.id " +
+            "FROM ComplimentCard c " +
+            "WHERE " +
+            "(SELECT COUNT(*) FROM Diary d " +
+            "WHERE d.complimentCard = c " +
+            "AND d.id = :userId) " +
+            "= 0")
+    Long findByDiaryAndUserId(@Param(value = "userId") Long userId);
 }
