@@ -17,7 +17,7 @@ public class DiarySimpleResponse {
 
     private Long diaryId;
     private String date;
-    private String emoticon;
+    private String emotion;
     private String content;
 
     public DiarySimpleResponse(Long diaryId, LocalDateTime date, EmotionSpectrum emoticon, String content) {
@@ -25,7 +25,7 @@ public class DiarySimpleResponse {
 
         this.diaryId = diaryId;
         this.date = date.format(formatter);
-        this.emoticon = emoticon.getEmoticon();
+        this.emotion = emoticon.getValue();
         this.content = content;
     }
 }
