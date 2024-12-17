@@ -66,23 +66,23 @@ public class DiaryService {
 
 
         // 세 CompletableFuture 조합
-        return CompletableFuture.allOf(scoreFuture, actionTipFuture, complimentFuture)
-                .thenApply(ignored -> {
-                    try {
-                        Float score = scoreFuture.get();
-                        String actionTip = actionTipFuture.get();
-                        String compliment = complimentFuture.get();
+        return scoreFuture
+                .thenCombine(actionTipFuture, (score, actionTip) -> new Object[]{score, actionTip})
+                .thenCombine(complimentFuture, (partialResult, compliment) -> {
+                    Float score = (Float) partialResult[0];
+                    String actionTip = (String) partialResult[1];
 
-                        ComplimentKeyword keyword = ComplimentKeyword.getKeyword(compliment);
-                        if (keyword == null) {
-                            keyword = ComplimentKeyword.NO_KEYWORD;
-                        }
-                        compliment = keyword.getValue();
-
-                        return DiaryConverter.toDiaryAnalysisResponse(score, actionTip, compliment);
-                    } catch (Exception e) {
-                        throw new RuntimeException("Failed to combine CompletableFutures", e);
+                    // ComplimentKeyword 처리
+                    ComplimentKeyword keyword = ComplimentKeyword.getKeyword(compliment);
+                    if (keyword == null) {
+                        keyword = ComplimentKeyword.NO_KEYWORD;
                     }
+                    compliment = keyword.getValue();
+
+                    return DiaryConverter.toDiaryAnalysisResponse(score, actionTip, compliment);
+                })
+                .exceptionally(ex -> {
+                    throw new RuntimeException("Failed to combine CompletableFutures", ex);
                 })
                 .join();
     }
