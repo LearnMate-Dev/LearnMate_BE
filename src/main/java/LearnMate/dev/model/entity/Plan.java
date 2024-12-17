@@ -18,7 +18,7 @@ public class Plan extends BaseTimeEntity {
     @Column(name = "plan_content", length = 300, nullable = false)
     private String content;
 
-    @Column(name = "plan_guide", nullable = false)
+    @Column(name = "plan_guide", nullable = false, length = 500)
     private String guide;
 
     @ManyToOne(fetch = FetchType.LAZY)

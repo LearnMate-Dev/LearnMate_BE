@@ -15,7 +15,7 @@ public class ActionTip extends BaseTimeEntity {
     @Column(name = "action_tip_id")
     private Long id;
 
-    @Column(name = "action_tip_content", nullable = false)
+    @Column(name = "action_tip_content", nullable = false, length = 500)
     private String content;
 
     @OneToOne(fetch = FetchType.LAZY)
