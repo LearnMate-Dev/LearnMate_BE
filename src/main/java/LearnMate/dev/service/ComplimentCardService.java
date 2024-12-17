@@ -96,7 +96,7 @@ public class ComplimentCardService {
     @Transactional
     public void deleteComplimentCard(Long userId) {
         List<Long> complimentIdList = complimentCardRepository.findByDiaryAndUserId(userId);
-        complimentIdList.forEach(complimentCardRepository::deleteById);
+        complimentCardRepository.deleteAllByIdInBatch(complimentIdList);
     }
 
     private Long getUserIdFromAuthentication() {
