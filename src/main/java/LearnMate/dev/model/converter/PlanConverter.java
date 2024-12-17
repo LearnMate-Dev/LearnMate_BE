@@ -7,6 +7,7 @@ import LearnMate.dev.model.dto.response.plan.PlanRecentResponse;
 import LearnMate.dev.model.entity.Plan;
 import LearnMate.dev.model.entity.User;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,13 +20,23 @@ public class PlanConverter {
                 .build();
     }
 
+    public static PlanListResponse toPlanListResponse(Plan plan) {
+        List<String> guides = Arrays.stream(plan.getGuide().split("\n"))
+                .map(String::trim)
+                .limit(2)
+                .collect(Collectors.toList());
+
+        return PlanListResponse.builder()
+                .todoId(plan.getId())
+                .content(plan.getContent())
+                .createdAt(plan.getCreatedAtFormatted())
+                .guide(guides)
+                .build();
+    }
+
     public static List<PlanListResponse> toPlanListResponse(List<Plan> plans) {
         return plans.stream()
-                .map(plan -> PlanListResponse.builder()
-                        .todoId(plan.getId())
-                        .content(plan.getContent())
-                        .createdAt(plan.getCreatedAtFormatted())
-                        .build())
+                .map(PlanConverter::toPlanListResponse)
                 .collect(Collectors.toList());
     }
 
