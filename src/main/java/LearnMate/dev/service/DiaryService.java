@@ -12,6 +12,7 @@ import LearnMate.dev.model.dto.response.diary.DiaryAnalysisResponse;
 import LearnMate.dev.model.dto.response.diary.DiaryCalendarResponse;
 import LearnMate.dev.model.dto.response.diary.DiaryDetailResponse;
 import LearnMate.dev.model.entity.*;
+import LearnMate.dev.model.enums.ComplimentKeyword;
 import LearnMate.dev.model.enums.EmotionSpectrum;
 import LearnMate.dev.repository.DiaryRepository;
 import LearnMate.dev.repository.UserRepository;
@@ -71,6 +72,12 @@ public class DiaryService {
                         Float score = scoreFuture.get();
                         String actionTip = actionTipFuture.get();
                         String compliment = complimentFuture.get();
+
+                        ComplimentKeyword keyword = ComplimentKeyword.getKeyword(compliment);
+                        if (keyword == null) {
+                            keyword = ComplimentKeyword.NO_KEYWORD;
+                        }
+                        compliment = keyword.getValue();
 
                         return DiaryConverter.toDiaryAnalysisResponse(score, actionTip, compliment);
                     } catch (Exception e) {
