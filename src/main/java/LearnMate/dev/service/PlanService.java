@@ -51,7 +51,7 @@ public class PlanService {
         return convertGuideToGuides(plan.getGuide());
     }
 
-    // Todo 생성
+    // Todo Guide 요청
     public List<String> postTodo(PlanPostRequest request) {
         validContentLength(request.getContent());
 

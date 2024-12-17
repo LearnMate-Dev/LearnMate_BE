@@ -25,10 +25,10 @@ public interface ComplimentCardRepository extends JpaRepository<ComplimentCard, 
 
     @Query(value = "SELECT c.id " +
             "FROM ComplimentCard c " +
-            "WHERE " +
-            "(SELECT COUNT(*) FROM Diary d " +
-            "WHERE d.complimentCard = c " +
-            "AND d.id = :userId) " +
-            "= 0")
-    Long findByDiaryAndUserId(@Param(value = "userId") Long userId);
+            "WHERE NOT EXISTS (" +
+            "   SELECT 1 " +
+            "   FROM Diary d " +
+            "   WHERE d.complimentCard = c AND d.id = :userId" +
+            ")")
+    List<Long> findByDiaryAndUserId(@Param(value = "userId") Long userId);
 }
